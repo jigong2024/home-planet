@@ -8,7 +8,7 @@ const MyPage = () => {
         <ul>
           <li>
             <Link href="/mypage/myreviews">내가 쓴 리뷰</Link>
-            <Link href="/">관심 리스트</Link>
+            <Link href="/mypage/wishlist">관심 리스트</Link>
           </li>
           {/* 다른 링크들 */}
         </ul>

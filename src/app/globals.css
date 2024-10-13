@@ -23,4 +23,10 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  .text-input {
+    @apply border bg-[#E2E1E1] text-center rounded-lg px-14;
+  }
+  .review-label {
+    @apply mt-4 text-start font-bold;
+  }
 }

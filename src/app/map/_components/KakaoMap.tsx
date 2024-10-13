@@ -1,15 +1,17 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
 import { useKakaoLoader as useKakaoLoaderOrigin } from "react-kakao-maps-sdk";
 import mockData from "./MockData";
 import { Article, GroupedData } from "../_types/ArticleType";
-import ReviewModal from "./ReviewModal";
+import SidePanel from "./SidePanel";
 
 export default function KaKaoMap() {
   const apiKey: string = process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY;
   const [seletedArticles, setSeletedArticles] = useState([]);
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
+
   // const mapRef = useRef(null);
 
   // SDK 로드
@@ -18,20 +20,7 @@ export default function KaKaoMap() {
     libraries: ["clusterer", "drawing", "services"]
   });
 
-  // 현 위치로 이동하는 함수
-  // const moveToCurrentLocation = () => {
-  //   if (navigator.geolocation && mapRef.current) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       const map = mapRef.current;
-  //       if (map) {
-  //         map.setCenter(new kakao.maps.LatLng(latitude, longitude));
-  //       }
-  //     });
-  //   }
-  // };
-
-  // 같은 위치의 리뷰들을 그룹화합니다.
+  // 같은 위치의 후기들을 그룹화합니다.
   const groupedData: GroupedData = useMemo(() => {
     const grouped = {};
     mockData.forEach((article: Article) => {
@@ -56,15 +45,33 @@ export default function KaKaoMap() {
     };
   }, []);
 
+  // 마커 클릭 핸들러 추가
+  const handleMarkerClick = (articles) => {
+    setSeletedArticles(articles);
+    setIsSidePanelOpen(true);
+  };
+
+  // 사이드 패널 토글 함수 추가
+  const toggleSidePanel = () => {
+    setIsSidePanelOpen(!isSidePanelOpen);
+  };
+
   return (
     <div className="flex flex-row">
-      <div className="flex flex-col gap-3 w-1/5">
+      {/* 왼쪽 사이드바 */}
+      <div className="flex flex-col gap-3 w-1/12">
         <button className="border rounded-md p-1">원룸/투룸</button>
         <button className="border rounded-md p-1">아파트</button>
         <button className="border rounded-md p-1">주택/빌라</button>
         <button className="border rounded-md p-1">오피스텔</button>
+        {/* 토글버튼 */}
+        <button onClick={toggleSidePanel} className="border rounded-md p-1">
+          검색
+        </button>
       </div>
-      <div className="w-4/5 overflow-hidden">
+
+      {/* 지도영역 */}
+      <div className="w-11/12 overflow-hidden relative">
         <Map center={mapCenter} className="container h-screen" level={11}>
           <MarkerClusterer averageCenter={true} minLevel={10}>
             {Object.entries(groupedData).map(([key, articles]) => {
@@ -74,7 +81,7 @@ export default function KaKaoMap() {
                   key={key}
                   position={{ lat, lng }}
                   onClick={() => {
-                    setSeletedArticles(articles);
+                    handleMarkerClick(articles);
                   }}
                 ></MapMarker>
               );
@@ -82,28 +89,9 @@ export default function KaKaoMap() {
           </MarkerClusterer>
         </Map>
 
-        <ReviewModal articles={seletedArticles} onClose={() => setSeletedArticles(null)} />
-        {/* <button
-          onClick={moveToCurrentLocation}
-          className="absolute bottom-4 right-4 bg-white border border-gray-300 rounded-md p-2 shadow-md z-10 hover:bg-gray-100"
-        >
-          현재 위치
-        </button> */}
+        {/* 사이드 패널 */}
+        <SidePanel articles={seletedArticles} isOpen={isSidePanelOpen} onClose={() => setIsSidePanelOpen(false)} />
       </div>
-
-      {/* {seletedArticles && (
-        <div>
-          <h2>후기 목록</h2>
-          {seletedArticles?.map((article, index) => (
-            <div key={index}>
-              <h3>{article.house_name}</h3>
-              <p>거주 유형: {article.house_type}</p>
-              <p>건물 유형: {article.build_type}</p>
-              <p>가격: {article.house_price.toLocaleString()}원</p>
-            </div>
-          ))}
-        </div>
-      )} */}
     </div>
   );
 }

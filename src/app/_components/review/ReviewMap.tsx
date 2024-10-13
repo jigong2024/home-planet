@@ -1,11 +1,13 @@
 "use client";
-// 샘플주소
-// 거제대로 3718
-// 서간도길 9-9
-import React, { useEffect, useRef, useState } from "react";
+import { Address } from "@/app/types/address";
+import { useEffect, useRef, useState } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
-const ReviewMap = () => {
+type props = {
+  getAddressData(data: Address): void;
+};
+
+const ReviewMap = (props: props) => {
   const [state, setState] = useState({
     center: { lat: 33.55635, lng: 126.795841 }
   });
@@ -17,10 +19,13 @@ const ReviewMap = () => {
       // 초기 렌더링 시 실행 막음
       isInitialMount.current = false;
     } else {
-      kakao.maps.load(() => getCoords());
+      kakao.maps.load(() => {
+        getCoords();
+      });
     }
-  }, [state]);
+  }, []);
 
+  // 좌표 찾는 함수
   const getCoords = () => {
     const geocoder = new kakao.maps.services.Geocoder();
     geocoder.addressSearch(`${searchAddress}`, (res, stat) => {
@@ -28,6 +33,7 @@ const ReviewMap = () => {
         const newSearch = res[0];
         setState({ center: { lat: +newSearch.y, lng: +newSearch.x } });
         console.log(newSearch);
+        props.getAddressData(newSearch);
       }
     });
   };
@@ -41,8 +47,16 @@ const ReviewMap = () => {
       <Map center={state.center} style={{ width: "1000px", height: "200px" }}>
         <MapMarker position={state.center} />
       </Map>
-      주소입력 :<input type="text" value={searchAddress} onChange={handleInputChange} className="border" />
-      <button onClick={getCoords}>입력</button>
+      <input
+        type="text"
+        value={searchAddress}
+        onChange={handleInputChange}
+        className="border text-center bg-[#E2E1E1] rounded-md"
+        placeholder="주소 입력"
+      />
+      <button onClick={getCoords} className="border px-2 ml-1 my-4 bg-[#9d9d9d] rounded-md text-white font-semibold">
+        확인
+      </button>
     </>
   );
 };

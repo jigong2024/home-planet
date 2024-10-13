@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
 const SidePanel = ({ articles, isOpen, onClose }) => {
+  //   검색어를 위한 상태
+  const [search, setSearch] = useState("");
+
   if (!articles || !isOpen) return null;
 
   // 평점 평균 점수 계산 함수
@@ -19,7 +22,12 @@ const SidePanel = ({ articles, isOpen, onClose }) => {
       </div>
 
       <div className="flex justify-between items-baseline">
-        <input className="border mb-4 rounded-md" />
+        <input
+          className="border mb-4 rounded-md p-1 flex-grow mr-2"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="검색어를 입력하세요."
+        />
         <button className="border p-1 text-[13px] rounded-md">검색</button>
       </div>
 

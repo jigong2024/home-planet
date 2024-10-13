@@ -12,15 +12,13 @@ export default function KaKaoMap() {
   const [seletedArticles, setSeletedArticles] = useState([]);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
 
-  // const mapRef = useRef(null);
-
   // SDK 로드
   useKakaoLoaderOrigin({
     appkey: apiKey,
     libraries: ["clusterer", "drawing", "services"]
   });
 
-  // 같은 위치의 후기들을 그룹화합니다.
+  // 같은 위치의 후기들을 그룹화
   const groupedData: GroupedData = useMemo(() => {
     const grouped = {};
     mockData.forEach((article: Article) => {
@@ -36,12 +34,16 @@ export default function KaKaoMap() {
     return grouped;
   }, []);
 
-  // 지도의 중심 좌표를 계산합니다.
+  // 지도의 중심 좌표를 계산
   const mapCenter = useMemo(() => {
-    const sum = mockData.reduce((acc, cur) => ({ lat: acc.lat + cur.lat, lng: acc.lng + cur.lng }), { lat: 0, lng: 0 });
+    const allArticles = Object.values(groupedData).flat();
+    const sum = allArticles.reduce((acc, cur) => ({ lat: acc.lat + cur.lat, lng: acc.lng + cur.lng }), {
+      lat: 0,
+      lng: 0
+    });
     return {
-      lat: sum.lat / mockData.length,
-      lng: sum.lng / mockData.length
+      lat: sum.lat / allArticles.length,
+      lng: sum.lng / allArticles.length
     };
   }, []);
 
@@ -60,7 +62,7 @@ export default function KaKaoMap() {
     <div className="flex flex-row">
       {/* 왼쪽 사이드바 */}
       <div className="flex flex-col gap-3 w-1/12">
-        <button className="border rounded-md p-1">원룸/투룸</button>
+        <button className="border rounded-md p-1">원/투룸</button>
         <button className="border rounded-md p-1">아파트</button>
         <button className="border rounded-md p-1">주택/빌라</button>
         <button className="border rounded-md p-1">오피스텔</button>

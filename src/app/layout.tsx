@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { CounterStoreProvider } from "@/providers/storeProvider";
 import { createClient } from "@/utils/supabase/server";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -33,12 +34,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <CounterStoreProvider uid={user?.id}>
-          {children}
-        </CounterStoreProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Script
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services`}
+          strategy="beforeInteractive"
+        />
+        <CounterStoreProvider uid={user?.id}>{children}</CounterStoreProvider>
       </body>
     </html>
   );

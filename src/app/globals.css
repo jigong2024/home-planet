@@ -9,11 +9,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
   }
 }
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -23,5 +22,17 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .text-input {
+    @apply border bg-[#E2E1E1] text-center rounded-lg px-14;
+  }
+  .review-label {
+    @apply mt-4 text-start font-bold;
+  }
+  .good-label {
+    @apply bg-[#2ECC71] px-8 py-2 rounded-lg font-bold text-white;
+  }
+  .bad-label {
+    @apply bg-[#FFA500] px-8 py-2 rounded-lg font-bold text-white;
   }
 }

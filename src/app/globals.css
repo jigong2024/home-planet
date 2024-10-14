@@ -29,4 +29,10 @@ body {
   .review-label {
     @apply mt-4 text-start font-bold;
   }
+  .good-label {
+    @apply bg-[#2ECC71] px-8 py-2 rounded-lg font-bold text-white;
+  }
+  .bad-label {
+    @apply bg-[#FFA500] px-8 py-2 rounded-lg font-bold text-white;
+  }
 }

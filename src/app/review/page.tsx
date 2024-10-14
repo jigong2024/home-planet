@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import ReviewMap from "../_components/review/ReviewMap";
 import browserClient from "../utils/supabase/client";
 import Dropdown from "../_components/review/Dropdown";
-import { Address } from "../types/address";
+import { Address } from "../types/Address";
 
 const ReviewPage = () => {
   const [houseType, setHouseType] = useState("");

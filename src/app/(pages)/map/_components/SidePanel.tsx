@@ -1,5 +1,7 @@
+"use client";
+
 import { Article } from "@/app/types/mapTypes/ArticleType";
-import { useState } from "react";
+import SearchInput from "./SearchInput";
 
 type SidePanelProps = {
   articles: Article[];
@@ -7,11 +9,21 @@ type SidePanelProps = {
   onClose: () => void;
   onViewAllClick: () => void;
   viewMode: string;
+  handleSearch: () => void;
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
 };
 
-const SidePanel = ({ articles, isOpen, onClose, onViewAllClick, viewMode }: SidePanelProps) => {
-  const [search, setSearch] = useState("");
-
+const SidePanel = ({
+  articles,
+  isOpen,
+  onClose,
+  onViewAllClick,
+  viewMode,
+  handleSearch,
+  search,
+  setSearch
+}: SidePanelProps) => {
   if (!articles || !isOpen) return null;
 
   // 평점 평균 점수 계산 함수
@@ -23,27 +35,18 @@ const SidePanel = ({ articles, isOpen, onClose, onViewAllClick, viewMode }: Side
 
   return (
     <div className="absolute left-8 top-0 h-full w-1/3 bg-white shadow-lg p-4 overflow-y-auto z-10">
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between mb-4">
+        {viewMode === "selected" && (
+          <button onClick={onViewAllClick} className="mb-4 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            모든 결과 보기
+          </button>
+        )}
         <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
           X
         </button>
       </div>
 
-      {viewMode === "selected" && (
-        <button onClick={onViewAllClick} className="mb-4 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-          모든 결과 보기
-        </button>
-      )}
-
-      <div className="flex justify-between items-baseline">
-        <input
-          className="border mb-4 rounded-md p-1 flex-grow mr-2"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="검색어를 입력하세요."
-        />
-        <button className="border p-1 text-[13px] rounded-md">검색</button>
-      </div>
+      <SearchInput search={search} handleSearch={handleSearch} setSearch={setSearch} />
 
       <div className="mb-4">
         <h2 className="text-xl font-bold">후기 목록</h2>

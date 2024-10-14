@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
 import { Article, GroupedData } from "../../../types/mapTypes/ArticleType";
 import SidePanel from "./SidePanel";
@@ -11,9 +11,12 @@ export default function KaKaoMap() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticles, setselectedArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
+
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState<"all" | "selected">("all");
+
+  const [search, setSearch] = useState("");
 
   // 처음 로드 시 Supabase에서 articles 가져오기
   useEffect(() => {
@@ -30,6 +33,20 @@ export default function KaKaoMap() {
 
     loadArticles();
   }, []);
+
+  // 검색 로직
+  const handleSearch = useCallback(() => {
+    const searchLower = search.toLowerCase().replace(/\s+/g, "");
+
+    const searched = articles.filter(
+      (article) =>
+        article.address.toLowerCase().replace(/\s+/g, "").includes(searchLower) ||
+        article.house_name?.toLowerCase().replace(/\s+/g, "").includes(searchLower)
+    );
+
+    setFilteredArticles(searched);
+    setViewMode("all");
+  }, [search, articles]);
 
   // 같은 위치의 후기들을 그룹화
   const groupedData: GroupedData = useMemo(() => {
@@ -108,6 +125,9 @@ export default function KaKaoMap() {
           onClose={() => setIsSidePanelOpen(false)}
           onViewAllClick={() => setViewMode("all")}
           viewMode={viewMode}
+          handleSearch={handleSearch}
+          search={search}
+          setSearch={setSearch}
         />
       </div>
     </div>

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import ReviewMap from "../_components/review/ReviewMap";
-import browserClient from "../utils/supabase/client";
-import Dropdown from "../_components/review/Dropdown";
-import { Address } from "../types/Address";
+import ReviewMap from "./_components/ReviewMap";
+import Dropdown from "./_components/Dropdown";
+import { Address } from "../../types/reviewTypes/Address";
+import browserClient from "@/utils/supabase/client";
 
 const ReviewPage = () => {
   const [houseType, setHouseType] = useState("");

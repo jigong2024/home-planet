@@ -2,26 +2,57 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
-// import { useKakaoLoader as useKakaoLoaderOrigin } from "react-kakao-maps-sdk";
-import mockData from "./MockData";
 import { Article, GroupedData } from "../../../types/mapTypes/ArticleType";
 import SidePanel from "./SidePanel";
+import { fetchArticles } from "./supabase";
 
 export default function KaKaoMap() {
-  // const apiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY as string;
+  const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticles, setselectedArticles] = useState<Article[]>([]);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"all" | "selected">("all");
 
-  // SDK 로드
-  // useKakaoLoaderOrigin({
-  //   appkey: apiKey,
-  //   libraries: ["clusterer", "drawing", "services"]
-  // });
+  // 처음 로드 시 Supabase에서 articles 가져오기
+  useEffect(() => {
+    async function loadArticles() {
+      setIsLoading(true);
+      const fetchedArticles = await fetchArticles();
+
+      setArticles(fetchedArticles);
+      setselectedArticles(fetchedArticles);
+      setFilteredArticles(fetchedArticles);
+
+      setIsLoading(false);
+    }
+
+    loadArticles();
+  }, []);
+
+  // 필터링 함수
+  const filterArticles = (filter: string) => {
+    setActiveFilter(filter);
+    if (filter === "all") {
+      setFilteredArticles(articles);
+    } else if (filter === "원/투룸") {
+      setFilteredArticles(
+        articles.filter((article) => article.building_type === "원룸" || article.building_type === "투룸")
+      );
+    } else if (filter === "주택/빌라") {
+      setFilteredArticles(
+        articles.filter((article) => article.building_type === "주택" || article.building_type === "빌라")
+      );
+    } else {
+      setFilteredArticles(articles.filter((article) => article.building_type === filter));
+    }
+  };
 
   // 같은 위치의 후기들을 그룹화
   const groupedData: GroupedData = useMemo(() => {
     const grouped: GroupedData = {};
-    mockData.forEach((article: Article) => {
+    filteredArticles.forEach((article: Article) => {
       // 각 후기의 위도와 경도를 결합한 고유 키 생성
       const key = `${article.lat},${article.lng}`;
 
@@ -32,30 +63,28 @@ export default function KaKaoMap() {
       grouped[key].push(article);
     });
     return grouped;
-  }, []);
-
-  // 페이지 로드 시 모든 후기를 selectedArticles에 설정
-  useEffect(() => {
-    const allArticles = Object.values(groupedData).flat();
-    setselectedArticles(allArticles);
-  }, [groupedData]);
+  }, [filteredArticles]);
 
   // 지도의 중심 좌표를 계산
   const mapCenter = useMemo(() => {
-    const allArticles = Object.values(groupedData).flat();
-    const sum = allArticles.reduce((acc, cur) => ({ lat: acc.lat + cur.lat, lng: acc.lng + cur.lng }), {
+    if (filteredArticles.length === 0) {
+      return { lat: 37.5665, lng: 126.978 }; // 서울 중심 좌표
+    }
+
+    const sum = filteredArticles.reduce((acc, cur) => ({ lat: acc.lat + cur.lat, lng: acc.lng + cur.lng }), {
       lat: 0,
       lng: 0
     });
     return {
-      lat: sum.lat / allArticles.length,
-      lng: sum.lng / allArticles.length
+      lat: sum.lat / filteredArticles.length,
+      lng: sum.lng / filteredArticles.length
     };
-  }, []);
+  }, [filteredArticles]);
 
   // 마커 클릭 핸들러 추가
   const handleMarkerClick = (articles: Article[]) => {
     setselectedArticles(articles);
+    setViewMode("selected");
     setIsSidePanelOpen(true);
   };
 
@@ -64,14 +93,42 @@ export default function KaKaoMap() {
     setIsSidePanelOpen(!isSidePanelOpen);
   };
 
+  if (isLoading) return <div>지도 로딩 중...</div>;
+
   return (
     <div className="flex flex-row">
       {/* 왼쪽 사이드바 */}
       <div className="flex flex-col gap-3 w-1/12">
-        <button className="border rounded-md p-1">원/투룸</button>
-        <button className="border rounded-md p-1">아파트</button>
-        <button className="border rounded-md p-1">주택/빌라</button>
-        <button className="border rounded-md p-1">오피스텔</button>
+        <button
+          className={`border rounded-md p-1 ${activeFilter === "all" ? "bg-blue-500 text-white" : ""}`}
+          onClick={() => filterArticles("all")}
+        >
+          모든 후기
+        </button>
+        <button
+          className={`border rounded-md p-1 ${activeFilter === "원/투룸" ? "bg-blue-500 text-white" : ""}`}
+          onClick={() => filterArticles("원/투룸")}
+        >
+          원/투룸
+        </button>
+        <button
+          className={`border rounded-md p-1 ${activeFilter === "아파트" ? "bg-blue-500 text-white" : ""}`}
+          onClick={() => filterArticles("아파트")}
+        >
+          아파트
+        </button>
+        <button
+          className={`border rounded-md p-1 ${activeFilter === "주택/빌라" ? "bg-blue-500 text-white" : ""}`}
+          onClick={() => filterArticles("주택/빌라")}
+        >
+          주택/빌라
+        </button>
+        <button
+          className={`border rounded-md p-1 ${activeFilter === "오피스텔" ? "bg-blue-500 text-white" : ""}`}
+          onClick={() => filterArticles("오피스텔")}
+        >
+          오피스텔
+        </button>
         {/* 토글버튼 */}
         <button onClick={toggleSidePanel} className="border rounded-md p-1">
           검색
@@ -98,7 +155,13 @@ export default function KaKaoMap() {
         </Map>
 
         {/* 사이드 패널 */}
-        <SidePanel articles={selectedArticles} isOpen={isSidePanelOpen} onClose={() => setIsSidePanelOpen(false)} />
+        <SidePanel
+          articles={viewMode === "all" ? filteredArticles : selectedArticles}
+          isOpen={isSidePanelOpen}
+          onClose={() => setIsSidePanelOpen(false)}
+          onViewAllClick={() => setViewMode("all")}
+          viewMode={viewMode}
+        />
       </div>
     </div>
   );

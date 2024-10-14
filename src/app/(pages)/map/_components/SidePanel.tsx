@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const SidePanel = ({ articles, isOpen, onClose }) => {
+const SidePanel = ({ articles, isOpen, onClose, onViewAllClick, viewMode }) => {
   //   검색어를 위한 상태
   const [search, setSearch] = useState("");
 
@@ -20,6 +20,12 @@ const SidePanel = ({ articles, isOpen, onClose }) => {
           X
         </button>
       </div>
+
+      {viewMode === "selected" && (
+        <button onClick={onViewAllClick} className="mb-4 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+          모든 결과 보기
+        </button>
+      )}
 
       <div className="flex justify-between items-baseline">
         <input

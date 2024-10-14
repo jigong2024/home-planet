@@ -1,5 +1,6 @@
-import { Article } from "@/app/types/Article";
-import { createClient } from "@/app/utils/supabase/server";
+import { Article } from "@/app/types/reviewTypes/Article";
+import { createClient } from "@/utils/supabase/server";
+
 import React from "react";
 
 export type Props = {
@@ -10,8 +11,12 @@ export type Props = {
 
 const DetailPage = async ({ params }: Props) => {
   const serverClient = createClient();
-  const { data }: Article = await serverClient.from("articles").select("*").eq("article_id", `${params.article_id}`);
-  const findData = data[0];
+  const res = await serverClient.from("articles").select("*").eq("article_id", `${params.article_id}`);
+  if (res.error !== null) {
+    return <div>에러{res.error.message}</div>;
+  }
+  console.log(res);
+  const findData: Article = res.data[0];
   const calculateScore =
     (findData.score_outside + findData.score_inside + findData.score_traffic + findData.score_crime) / 8;
 

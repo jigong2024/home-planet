@@ -1,5 +1,6 @@
 "use client";
-import { Address } from "@/app/types/Address";
+
+import { Address } from "@/app/types/reviewTypes/Address";
 import { useEffect, useRef, useState } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 

@@ -1,4 +1,5 @@
 export interface Review {
+  article_id: number;
   house_name: string;
   good: string;
   bad: string;
@@ -6,4 +7,5 @@ export interface Review {
   score_inside: number;
   score_traffic: number;
   score_crime: number;
+  address: string;
 }

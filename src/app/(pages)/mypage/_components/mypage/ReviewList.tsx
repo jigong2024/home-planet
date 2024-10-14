@@ -1,5 +1,5 @@
-import { Review } from "@/app/types/mypageTypes/Review";
 import React from "react";
+import { Review } from "@/app/types/mypageTypes/Review";
 
 interface ReviewListProps {
   reviews: Review[]; // 리뷰 배열
@@ -16,10 +16,16 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
         // 4개의 스코어의 평균 값 계산
         const averageScore =
           (review.score_outside + review.score_inside + review.score_traffic + review.score_crime) / 4;
+
+        console.log("Address:", review.address); // 확인용 로
+
         return (
-          <li key={review.house_name} className="p-4 border rounded-lg shadow">
-            <h2 className="text-lg font-semibold">{review.house_name}</h2> 
-{/* 이름없으면 주소로 나오게 수정 */}
+          <li key={review.article_id} className="p-4 border rounded-lg shadow">
+            {review.house_name ? (
+              <h2 className="text-lg font-semibold">{review.house_name}</h2>
+            ) : (
+              <h2 className="text-lg font-semibold">{review.address || "주소 정보 없음"}</h2>
+            )}
             <p className="text-gray-600">장점: {review.good}</p>
             <p className="text-gray-600">단점: {review.bad}</p>
             <div className="flex justify-between text-sm text-gray-500">

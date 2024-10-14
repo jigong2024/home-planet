@@ -5,6 +5,9 @@ import ReviewMap from "./_components/ReviewMap";
 import Dropdown from "./_components/Dropdown";
 import { Address } from "../../types/reviewTypes/Address";
 import browserClient from "@/utils/supabase/client";
+import { Article } from "@/app/types/reviewTypes/Article";
+import { useRouter } from "next/navigation";
+import { useCounterStore } from "@/providers/storeProvider";
 
 const ReviewPage = () => {
   const [houseType, setHouseType] = useState("");
@@ -30,6 +33,8 @@ const ReviewPage = () => {
     title: ["건물 유형을 선택해주세요."],
     data: ["아파트", "원룸", "투룸", "쓰리룸", "주택", "빌라", "오피스텔"]
   };
+  const router = useRouter();
+  const uid = useCounterStore((state) => state.uid);
 
   // 거주 유형, 건물 유형 값 가져오기
   const getHouseType = (type: string) => {
@@ -75,7 +80,7 @@ const ReviewPage = () => {
   const createReview = async () => {
     if (!address) return;
     await browserClient.from("articles").insert({
-      writer: "c1b966c4-0733-49be-9864-8092d2ab19f3",
+      writer: uid,
       house_name: address.road_address.building_name,
       house_type: houseType,
       house_year: houseYear,
@@ -94,6 +99,14 @@ const ReviewPage = () => {
       lng: address.x
     });
     alert("리뷰가 등록되었습니다!");
+
+    // 리뷰 등록 후 상세페이지로 이동
+    const res = await browserClient.from("articles").select("*").eq("writer", uid);
+    if (res.error !== null) {
+      return <div>error : {res.error.message}</div>;
+    }
+    const findReview: Article = res.data[res.data.length - 1];
+    router.push(`/review/${findReview.article_id}`);
   };
 
   return (

@@ -17,8 +17,6 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
         const averageScore =
           (review.score_outside + review.score_inside + review.score_traffic + review.score_crime) / 4;
 
-        console.log("Address:", review.address); // 확인용 로
-
         return (
           <li key={review.article_id} className="p-4 border rounded-lg shadow">
             {review.house_name ? (

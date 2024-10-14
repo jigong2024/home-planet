@@ -10,7 +10,7 @@ import browserClient from "@/utils/supabase/client";
 const MyReviewsPage = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userId, setUserId] = useState<string>("c1b966c4-0733-49be-9864-8092d2ab19f3");
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
     const fetchUserId = async () => {

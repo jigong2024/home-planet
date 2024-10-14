@@ -1,26 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
-import { useKakaoLoader as useKakaoLoaderOrigin } from "react-kakao-maps-sdk";
+// import { useKakaoLoader as useKakaoLoaderOrigin } from "react-kakao-maps-sdk";
 import mockData from "./MockData";
 import { Article, GroupedData } from "../../../types/mapTypes/ArticleType";
 import SidePanel from "./SidePanel";
 
 export default function KaKaoMap() {
-  const apiKey: string = process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY;
-  const [seletedArticles, setSeletedArticles] = useState([]);
+  // const apiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY as string;
+  const [selectedArticles, setselectedArticles] = useState<Article[]>([]);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
 
   // SDK 로드
-  useKakaoLoaderOrigin({
-    appkey: apiKey,
-    libraries: ["clusterer", "drawing", "services"]
-  });
+  // useKakaoLoaderOrigin({
+  //   appkey: apiKey,
+  //   libraries: ["clusterer", "drawing", "services"]
+  // });
 
   // 같은 위치의 후기들을 그룹화
   const groupedData: GroupedData = useMemo(() => {
-    const grouped = {};
+    const grouped: GroupedData = {};
     mockData.forEach((article: Article) => {
       // 각 후기의 위도와 경도를 결합한 고유 키 생성
       const key = `${article.lat},${article.lng}`;
@@ -33,6 +33,12 @@ export default function KaKaoMap() {
     });
     return grouped;
   }, []);
+
+  // 페이지 로드 시 모든 후기를 selectedArticles에 설정
+  useEffect(() => {
+    const allArticles = Object.values(groupedData).flat();
+    setselectedArticles(allArticles);
+  }, [groupedData]);
 
   // 지도의 중심 좌표를 계산
   const mapCenter = useMemo(() => {
@@ -48,8 +54,8 @@ export default function KaKaoMap() {
   }, []);
 
   // 마커 클릭 핸들러 추가
-  const handleMarkerClick = (articles) => {
-    setSeletedArticles(articles);
+  const handleMarkerClick = (articles: Article[]) => {
+    setselectedArticles(articles);
     setIsSidePanelOpen(true);
   };
 
@@ -92,7 +98,7 @@ export default function KaKaoMap() {
         </Map>
 
         {/* 사이드 패널 */}
-        <SidePanel articles={seletedArticles} isOpen={isSidePanelOpen} onClose={() => setIsSidePanelOpen(false)} />
+        <SidePanel articles={selectedArticles} isOpen={isSidePanelOpen} onClose={() => setIsSidePanelOpen(false)} />
       </div>
     </div>
   );

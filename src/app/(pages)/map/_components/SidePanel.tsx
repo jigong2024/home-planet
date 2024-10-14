@@ -42,7 +42,7 @@ const SidePanel = ({ articles, isOpen, onClose }) => {
               className="mb-4 p-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
             >
               <div className="flex gap-2">
-                <h3 className="font-semibold text-lg mb-2">{article.house_name}</h3>
+                <h3 className="font-semibold text-lg mb-2">{article.house_name || article.address}</h3>
                 <h3>{scoreAverage(article)}</h3>
               </div>
               <div className="flex gap-5">

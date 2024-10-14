@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
 import { useKakaoLoader as useKakaoLoaderOrigin } from "react-kakao-maps-sdk";
 import mockData from "./MockData";
-import { Article, GroupedData } from "../_types/ArticleType";
+import { Article, GroupedData } from "../../../types/mapTypes/ArticleType";
 import SidePanel from "./SidePanel";
 
 export default function KaKaoMap() {

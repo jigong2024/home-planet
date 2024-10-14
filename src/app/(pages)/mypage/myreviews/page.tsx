@@ -1,4 +1,4 @@
-import MyReviewsPage from "@/app/_components/mypage/MyReviewsPage";
+import MyReviewsPage from "@/app/(pages)/mypage/_components/mypage/MyReviewsPage";
 
 const MyReviews = () => {
   return (

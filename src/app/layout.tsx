@@ -32,7 +32,6 @@ export default async function RootLayout({
   const {
     data: { user }
   } = await serverClient.auth.getUser();
-  console.log(user?.id);
 
   return (
     <html lang="en">

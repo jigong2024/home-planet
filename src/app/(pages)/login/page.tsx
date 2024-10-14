@@ -32,7 +32,7 @@ const Loginpage = () => {
         alert("이메일/패스워드를 다시 확인해주세요!");
         throw error;
       } else {
-        window.location.href = window.origin
+        window.location.href = window.origin;
       }
     } catch (error) {
       console.error("Error signing in:", error);
@@ -43,7 +43,7 @@ const Loginpage = () => {
     <>
       <form onSubmit={handleAddInfo}>
         <input
-          type="email"   
+          type="email"
           onChange={(event) => {
             handleChangeInput(event, "email");
           }}

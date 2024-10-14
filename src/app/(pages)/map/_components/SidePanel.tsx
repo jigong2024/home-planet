@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import { Article } from "@/app/types/mapTypes/ArticleType";
+import { useState } from "react";
 
-const SidePanel = ({ articles, isOpen, onClose, onViewAllClick, viewMode }) => {
-  //   검색어를 위한 상태
+type SidePanelProps = {
+  articles: Article[];
+  isOpen: boolean;
+  onClose: () => void;
+  onViewAllClick: () => void;
+  viewMode: string;
+};
+
+const SidePanel = ({ articles, isOpen, onClose, onViewAllClick, viewMode }: SidePanelProps) => {
   const [search, setSearch] = useState("");
 
   if (!articles || !isOpen) return null;
 
   // 평점 평균 점수 계산 함수
-  const scoreAverage = (article) => {
+  const scoreAverage = (article: Article) => {
     const score = [article.score_outside, article.score_inside, article.score_traffic, article.score_crime];
     const sum = score.reduce((a, b) => a + b, 0);
-    return (sum / score.length).toFixed(1);
+    return (sum / score.length / 2).toFixed(1);
   };
 
   return (

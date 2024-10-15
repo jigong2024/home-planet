@@ -3,6 +3,7 @@
 import { Article } from "@/app/types/mapTypes/ArticleType";
 import SearchInput from "./SearchInput";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type SidePanelProps = {
   articles: Article[];
@@ -25,6 +26,8 @@ const SidePanel = ({
   search,
   setSearch
 }: SidePanelProps) => {
+  const router = useRouter();
+
   if (!articles || !isOpen) return null;
 
   // 평점 평균 점수 계산 함수
@@ -32,6 +35,11 @@ const SidePanel = ({
     const score = [article.score_outside, article.score_inside, article.score_traffic, article.score_crime];
     const sum = score.reduce((a, b) => a + b, 0);
     return (sum / score.length / 2).toFixed(1);
+  };
+
+  // 상세페이지로 이동하는 함구
+  const handleArticleClick = (articleId: number) => {
+    router.push(`/review/${articleId}`);
   };
 
   return (
@@ -57,6 +65,7 @@ const SidePanel = ({
           articles.map((article, index) => (
             <div
               key={index}
+              onClick={() => handleArticleClick(article.article_id)}
               className="mb-4 p-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
             >
               <div className="flex gap-2">

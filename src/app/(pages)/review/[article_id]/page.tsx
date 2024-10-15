@@ -46,13 +46,17 @@ const DetailPage = ({ params }: Props) => {
 
   if (!review) return;
 
-  const calculateScore = (review.score_outside + review.score_inside + review.score_traffic + review.score_crime) / 8;
+  const scoreAverage = () => {
+    const score = [review.score_outside, review.score_inside, review.score_traffic, review.score_crime];
+    const sum = score.reduce((a, b) => a + b, 0);
+    return (sum / score.length / 2).toFixed(1);
+  };
 
   return (
     <div className="flex flex-col items-center text-center">
       <header>
         <h1 className="font-bold text-4xl mt-8">{review.house_name ? review.house_name : review.address}</h1>
-        <p className="text-s my-6 text-gray-400">총 평점 ★ {calculateScore.toFixed(1)}</p>
+        <p className="text-s my-6 text-gray-400">총 평점 ★ {scoreAverage()}</p>
         <p className="font-bold my-6">{`거주 유형: ${review.house_type} / 거주 년도: ${review.house_year} / 건물 유형: ${review.building_type} / 거주 층: ${review.house_floor}`}</p>
       </header>
       <Image src={review.img_url} alt="img_url" width={300} height={100} className="mb-10" />
@@ -95,7 +99,9 @@ const DetailPage = ({ params }: Props) => {
           </button>
         </div>
       ) : null}
-      <button className="border p-2 px-14 my-8 bg-[#003366] text-white rounded-full">홈으로</button>
+      <Link href="/">
+        <button className="border p-2 px-14 my-8 bg-[#003366] text-white rounded-full">홈으로</button>
+      </Link>
     </div>
   );
 };

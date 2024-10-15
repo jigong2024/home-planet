@@ -11,7 +11,7 @@ type SidePanelProps = {
   viewMode: string;
   handleSearch: () => void;
   search: string;
-  setSearch: Dispatch<SetStateAction<string>>;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const SidePanel = ({

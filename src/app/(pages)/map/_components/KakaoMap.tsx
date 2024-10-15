@@ -67,7 +67,7 @@ export default function KaKaoMap() {
   // 지도의 중심 좌표를 계산
   const mapCenter = useMemo(() => {
     if (filteredArticles.length === 0) {
-      return { lat: 37.5665, lng: 126.978 }; // 서울 중심 좌표
+      return { lat: 37.5665, lng: 126.978 - 2 }; // 서울 중심 좌표
     }
 
     const sum = filteredArticles.reduce((acc, cur) => ({ lat: acc.lat + cur.lat, lng: acc.lng + cur.lng }), {
@@ -76,7 +76,7 @@ export default function KaKaoMap() {
     });
     return {
       lat: sum.lat / filteredArticles.length,
-      lng: sum.lng / filteredArticles.length
+      lng: sum.lng / filteredArticles.length - 2
     };
   }, [filteredArticles]);
 
@@ -101,7 +101,7 @@ export default function KaKaoMap() {
 
       {/* 지도영역 */}
       <div className="w-11/12 overflow-hidden relative">
-        <Map center={mapCenter} className="container h-screen" level={11}>
+        <Map center={mapCenter} className="container h-screen" level={12}>
           <MarkerClusterer averageCenter={true} minLevel={10}>
             {Object.entries(groupedData).map(([key, articles]) => {
               const [lat, lng] = key.split(",").map(Number);

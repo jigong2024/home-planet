@@ -16,7 +16,7 @@ export interface CounterStoreProviderProps {
 
 export const CounterStoreProvider = ({
   children,
-  uid = "" // Default to an empty string if uid  is not provided
+  uid = "" // Default to an empty string if uid is not provided
 }: CounterStoreProviderProps) => {
   const storeRef = useRef<CounterStoreApi>();
 

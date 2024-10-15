@@ -1,14 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import ReviewMap from "./_components/ReviewMap";
-import { Address } from "../../types/reviewTypes/Address";
+import { Address } from "@/app/types/reviewTypes/Address";
 import browserClient from "@/utils/supabase/client";
-import { Article } from "@/app/types/reviewTypes/Article";
 import { useRouter } from "next/navigation";
-import { useCounterStore } from "@/providers/storeProvider";
+import { useEffect, useRef, useState } from "react";
+import { Article } from "@/app/types/reviewTypes/Article";
+import ModifyMap from "../../_components/ModifyMap";
+import { Props } from "../page";
 
-const ReviewPage = () => {
+export type AddressInfo = {
+  houseName: string;
+  address: string;
+  lat: number;
+  lng: number;
+};
+
+const ModifyReview = ({ params }: Props) => {
   const [houseType, setHouseType] = useState("");
   const [houseYear, setHouseYear] = useState("");
   const [buildingType, setBuildingType] = useState("");
@@ -23,21 +30,11 @@ const ReviewPage = () => {
   const [address, setAddress] = useState<Address>();
   const [imgUrl, setImgUrl] = useState("");
   const [previewUrls, setPreviewUrls] = useState("");
+  const [addressInfo, setAddressInfo] = useState<AddressInfo>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const houseTypeData = ["매매", "전세", "월세"];
   const buildingTypeData = ["아파트", "원룸", "투룸", "쓰리룸", "주택", "빌라", "오피스텔"];
-
   const router = useRouter();
-  const uid = useCounterStore((state) => state.uid);
-
-  // 주소 정보 가져오기
-  const getAddressData = (data: Address) => {
-    setAddress(data);
-  };
-
-  useEffect(() => {
-    getDefaultImg();
-  }, []);
 
   // 거주/건물 유형 선택
   const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -46,12 +43,43 @@ const ReviewPage = () => {
     if (buildingTypeData.includes(type)) setBuildingType(type);
   };
 
-  // 사진등록 기본이미지 가져오기
-  const getDefaultImg = () => {
-    const { data } = browserClient.storage.from("home").getPublicUrl("default-img.png");
-    setPreviewUrls(data.publicUrl);
+  // 주소 정보 가져오기
+  const getAddressData = (data: Address) => {
+    setAddress(data);
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // 이전 작성한 리뷰 데이터 가져온 후 저장
+  const fetchData = async () => {
+    const res = await browserClient.from("articles").select("*").eq("article_id", `${params.article_id}`);
+    if (res.error !== null) return <div>error : {res.error.message}</div>;
+
+    const review: Article = res.data[0];
+    setHouseType(review.house_type);
+    setHouseYear(review.house_year);
+    setBuildingType(review.building_type);
+    setHouseFloor(review.house_floor);
+    setHousePrice(review.house_price);
+    setPreviewUrls(review.img_url);
+    setImgUrl(review.img_url);
+    setScoreOutside(review.score_outside.toString());
+    setScoreInside(review.score_inside.toString());
+    setScoreTraffic(review.score_traffic.toString());
+    setScoreCrime(review.score_crime.toString());
+    setGood(review.good);
+    setBad(review.bad);
+    setAddressInfo({
+      houseName: review.house_name,
+      address: review.address,
+      lat: review.lat,
+      lng: review.lng
+    });
+  };
+
+  // 사진 변경
   const handleImgChange = (e: React.ChangeEvent) => {
     const target = (e.target as HTMLInputElement).files as FileList;
     handleFilePreviewChange(target);
@@ -71,9 +99,10 @@ const ReviewPage = () => {
     setImgUrl(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/home/${data.path}`);
   };
 
-  // 리뷰 생성
-  const createReview = async () => {
-    if (!address) return alert("주소를 입력해주세요!");
+  // 리뷰 수정
+  const updateReview = async () => {
+    if (!address) return;
+    if (!addressInfo) return alert("주소를 입력해주세요!");
     if (!houseType) return alert("거주 유형을 선택해주세요!");
     if (!houseYear) return alert("거주 년도를 입력해주세요!");
     if (!buildingType) return alert("건물 유형을 선택해주세요!");
@@ -83,44 +112,45 @@ const ReviewPage = () => {
     if (!scoreOutside || !scoreInside || !scoreInside || !scoreCrime) return alert("4가지 항목을 전부 평가해주세요!");
     if (!good) return alert("장점을 작성해주세요!");
     if (!bad) return alert("단점을 작성해주세요!");
-    await browserClient.from("articles").insert({
-      writer: uid,
-      house_name: address.road_address.building_name,
-      house_type: houseType,
-      house_year: houseYear,
-      house_price: housePrice,
-      building_type: buildingType,
-      house_floor: houseFloor,
-      score_outside: scoreOutside,
-      score_inside: scoreInside,
-      score_traffic: scoreTraffic,
-      score_crime: scoreCrime,
-      good,
-      bad,
-      img_url: imgUrl,
-      address: address.address_name,
-      lat: address.y,
-      lng: address.x
-    });
-    alert("리뷰가 등록되었습니다!");
+    await browserClient
+      .from("articles")
+      .update({
+        house_name: address.road_address.building_name,
+        house_type: houseType,
+        house_year: houseYear,
+        house_price: housePrice,
+        building_type: buildingType,
+        house_floor: houseFloor,
+        score_outside: scoreOutside,
+        score_inside: scoreInside,
+        score_traffic: scoreTraffic,
+        score_crime: scoreCrime,
+        good,
+        bad,
+        img_url: imgUrl,
+        address: address.address_name,
+        lat: address.y,
+        lng: address.x
+      })
+      .eq("article_id", params.article_id);
+    alert("수정이 완료되었습니다!");
 
-    // 리뷰 등록 후 상세페이지로 이동
-    const res = await browserClient.from("articles").select("*").eq("writer", uid);
-    if (res.error !== null) {
-      return <div>error : {res.error.message}</div>;
-    }
-    const findReview: Article = res.data[res.data.length - 1];
-    router.push(`/review/${findReview.article_id}`);
+    // 리뷰 수정 후 상세페이지로 이동
+    router.push(`/review/${params.article_id}`);
   };
+
+  if (!houseType && !buildingType) return;
 
   return (
     <div className="flex flex-col items-center text-center">
       <header>
-        <h1 className="font-bold text-4xl mt-8">리뷰 등록하기</h1>
+        <h1 className="font-bold text-4xl mt-8">
+          {addressInfo?.houseName ? addressInfo.houseName : addressInfo?.address}
+        </h1>
         <p className="text-xs my-6 text-gray-400">솔직해도 괜찮아 어차피 익명이니까</p>
       </header>
       <main>
-        <ReviewMap getAddressData={getAddressData} />
+        <ModifyMap getAddressData={getAddressData} addressInfo={addressInfo!} />
         <div className="grid grid-cols-2 gap-2 justify-items-center">
           <div>
             <div className="flex flex-col">
@@ -129,7 +159,7 @@ const ReviewPage = () => {
               </label>
               <select onChange={handleSelect} id="house-type" defaultValue="" className="text-input">
                 <option value="" disabled>
-                  거주 유형을 선택해주세요.
+                  {houseType}
                 </option>
                 {houseTypeData.map((type, idx) => {
                   return (
@@ -154,7 +184,7 @@ const ReviewPage = () => {
               </label>
               <select onChange={handleSelect} id="house-type" defaultValue="" className="text-input">
                 <option value="" disabled>
-                  건물 유형을 선택해주세요.
+                  {buildingType}
                 </option>
                 {buildingTypeData.map((type, idx) => {
                   return (
@@ -228,12 +258,12 @@ const ReviewPage = () => {
             <input className="border" type="text" value={bad} onChange={(e) => setBad(e.target.value)} />
           </div>
         </div>
-        <button className="border p-2 px-14 my-8 bg-[#003366] text-white rounded-full" onClick={createReview}>
-          등록하기
+        <button className="border p-2 px-14 my-8 bg-[#003366] text-white rounded-full" onClick={updateReview}>
+          수정
         </button>
       </main>
     </div>
   );
 };
 
-export default ReviewPage;
+export default ModifyReview;

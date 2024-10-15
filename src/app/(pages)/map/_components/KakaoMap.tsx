@@ -1,27 +1,82 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
-import { useKakaoLoader as useKakaoLoaderOrigin } from "react-kakao-maps-sdk";
-import mockData from "./MockData";
 import { Article, GroupedData } from "../../../types/mapTypes/ArticleType";
 import SidePanel from "./SidePanel";
+import { fetchArticles } from "./supabase";
+import SideBar from "./SideBar";
 
-export default function KaKaoMap() {
-  const apiKey: string = process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY;
-  const [seletedArticles, setSeletedArticles] = useState([]);
+type KakaoMapProps = {
+  initialSearch: string;
+};
+
+export default function KaKaoMap({ initialSearch = "" }: KakaoMapProps) {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [selectedArticles, setselectedArticles] = useState<Article[]>([]);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
+
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<"all" | "selected">("all");
 
-  // SDK 로드
-  useKakaoLoaderOrigin({
-    appkey: apiKey,
-    libraries: ["clusterer", "drawing", "services"]
-  });
+  const [search, setSearch] = useState(initialSearch);
+
+  // 처음 로드 시 Supabase에서 articles 가져오기
+  useEffect(() => {
+    async function loadArticlesAndSearch() {
+      setIsLoading(true);
+      const fetchedArticles = await fetchArticles();
+
+      setArticles(fetchedArticles);
+      setselectedArticles(fetchedArticles);
+
+      if (initialSearch) {
+        // 초기 검색 수행
+        const searchLower = initialSearch.toLowerCase().replace(/\s+/g, "");
+        const searched = fetchedArticles.filter(
+          (article) =>
+            article.address.toLowerCase().replace(/\s+/g, "").includes(searchLower) ||
+            article.house_name?.toLowerCase().replace(/\s+/g, "").includes(searchLower)
+        );
+        setFilteredArticles(searched);
+      } else {
+        setFilteredArticles(fetchedArticles);
+      }
+
+      setIsLoading(false);
+    }
+
+    loadArticlesAndSearch();
+  }, [initialSearch]);
+
+  // 검색 로직
+  const handleSearch = useCallback(
+    (searchTerm: string) => {
+      const trimmedSearchTerm = searchTerm.trim();
+      if (trimmedSearchTerm === "") {
+        alert("검색어를 입력해주세요.");
+        return;
+      }
+
+      const searchLower = trimmedSearchTerm.toLowerCase().replace(/\s+/g, "");
+
+      const searched = articles.filter(
+        (article) =>
+          article.address.toLowerCase().replace(/\s+/g, "").includes(searchLower) ||
+          article.house_name?.toLowerCase().replace(/\s+/g, "").includes(searchLower)
+      );
+
+      setFilteredArticles(searched);
+      setViewMode("all");
+    },
+    [articles]
+  );
 
   // 같은 위치의 후기들을 그룹화
   const groupedData: GroupedData = useMemo(() => {
-    const grouped = {};
-    mockData.forEach((article: Article) => {
+    const grouped: GroupedData = {};
+    filteredArticles.forEach((article: Article) => {
       // 각 후기의 위도와 경도를 결합한 고유 키 생성
       const key = `${article.lat},${article.lng}`;
 
@@ -32,49 +87,46 @@ export default function KaKaoMap() {
       grouped[key].push(article);
     });
     return grouped;
-  }, []);
+  }, [filteredArticles]);
 
   // 지도의 중심 좌표를 계산
   const mapCenter = useMemo(() => {
-    const allArticles = Object.values(groupedData).flat();
-    const sum = allArticles.reduce((acc, cur) => ({ lat: acc.lat + cur.lat, lng: acc.lng + cur.lng }), {
+    if (filteredArticles.length === 0) {
+      return { lat: 37.5665, lng: 126.978 - 2 }; // 서울 중심 좌표
+    }
+
+    const sum = filteredArticles.reduce((acc, cur) => ({ lat: acc.lat + cur.lat, lng: acc.lng + cur.lng }), {
       lat: 0,
       lng: 0
     });
     return {
-      lat: sum.lat / allArticles.length,
-      lng: sum.lng / allArticles.length
+      lat: sum.lat / filteredArticles.length,
+      lng: sum.lng / filteredArticles.length - 2
     };
-  }, []);
+  }, [filteredArticles]);
 
   // 마커 클릭 핸들러 추가
-  const handleMarkerClick = (articles) => {
-    setSeletedArticles(articles);
+  const handleMarkerClick = (articles: Article[]) => {
+    setselectedArticles(articles);
+    setViewMode("selected");
     setIsSidePanelOpen(true);
   };
 
-  // 사이드 패널 토글 함수 추가
-  const toggleSidePanel = () => {
-    setIsSidePanelOpen(!isSidePanelOpen);
-  };
+  if (isLoading) return <div>지도 로딩 중...</div>;
 
   return (
     <div className="flex flex-row">
-      {/* 왼쪽 사이드바 */}
-      <div className="flex flex-col gap-3 w-1/12">
-        <button className="border rounded-md p-1">원/투룸</button>
-        <button className="border rounded-md p-1">아파트</button>
-        <button className="border rounded-md p-1">주택/빌라</button>
-        <button className="border rounded-md p-1">오피스텔</button>
-        {/* 토글버튼 */}
-        <button onClick={toggleSidePanel} className="border rounded-md p-1">
-          검색
-        </button>
-      </div>
+      {/* 사이드 바 */}
+      <SideBar
+        articles={articles}
+        setFilteredArticles={setFilteredArticles}
+        setIsSidePanelOpen={setIsSidePanelOpen}
+        isSidePanelOpen={isSidePanelOpen}
+      />
 
       {/* 지도영역 */}
-      <div className="w-11/12 overflow-hidden relative">
-        <Map center={mapCenter} className="container h-screen" level={11}>
+      <div className="w-10/12 overflow-hidden relative">
+        <Map center={mapCenter} className="container h-screen" level={13}>
           <MarkerClusterer averageCenter={true} minLevel={10}>
             {Object.entries(groupedData).map(([key, articles]) => {
               const [lat, lng] = key.split(",").map(Number);
@@ -92,7 +144,16 @@ export default function KaKaoMap() {
         </Map>
 
         {/* 사이드 패널 */}
-        <SidePanel articles={seletedArticles} isOpen={isSidePanelOpen} onClose={() => setIsSidePanelOpen(false)} />
+        <SidePanel
+          articles={viewMode === "all" ? filteredArticles : selectedArticles}
+          isOpen={isSidePanelOpen}
+          onClose={() => setIsSidePanelOpen(false)}
+          onViewAllClick={() => setViewMode("all")}
+          viewMode={viewMode}
+          handleSearch={handleSearch}
+          search={search}
+          setSearch={setSearch}
+        />
       </div>
     </div>
   );

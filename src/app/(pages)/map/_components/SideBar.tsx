@@ -39,6 +39,11 @@ const SideBar = ({ articles, setFilteredArticles, setIsSidePanelOpen, isSidePane
 
   return (
     <div className="flex flex-col gap-3 w-2/12 border">
+      {/* 토글버튼 */}
+      <button onClick={toggleSidePanel} className="sideManu-button">
+        검색
+      </button>
+
       <button
         className={`sideManu-button ${activeFilter === "all" ? "border-[#003365] text-[#003365]" : ""}`}
         onClick={() => filterArticles("all")}
@@ -79,10 +84,6 @@ const SideBar = ({ articles, setFilteredArticles, setIsSidePanelOpen, isSidePane
       >
         <Image src="https://img.icons8.com/ios/50/building.png" alt="building" width="35" height="35" />
         오피스텔
-      </button>
-      {/* 토글버튼 */}
-      <button onClick={toggleSidePanel} className="sideManu-button">
-        검색
       </button>
     </div>
   );

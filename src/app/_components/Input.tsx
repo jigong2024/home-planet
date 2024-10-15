@@ -29,7 +29,7 @@ export default function Input() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="건물 이름이나 주소로 검색"
-          className="p-2 border rounded-md"
+          className="search-input"
         />
         <button type="submit">검색</button>
       </form>

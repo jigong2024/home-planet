@@ -2,6 +2,7 @@
 
 import { Article } from "@/app/types/mapTypes/ArticleType";
 import SearchInput from "./SearchInput";
+import Image from "next/image";
 
 type SidePanelProps = {
   articles: Article[];
@@ -60,15 +61,18 @@ const SidePanel = ({
             >
               <div className="flex gap-2">
                 <h3 className="font-semibold text-lg mb-2">{article.house_name || article.address}</h3>
+                <h3>
+                  <Image src="https://img.icons8.com/fluency/48/star--v1.png" alt="star--v1" width="20" height="20" />
+                </h3>
                 <h3>{scoreAverage(article)}</h3>
               </div>
               <div className="flex gap-5">
                 <div>
-                  <p>장점</p>
+                  <p className="good-label">장점</p>
                   <p>{article.good}</p>
                 </div>
                 <div>
-                  <p>단점</p>
+                  <p className="bad-label">단점</p>
                   <p>{article.bad}</p>
                 </div>
               </div>

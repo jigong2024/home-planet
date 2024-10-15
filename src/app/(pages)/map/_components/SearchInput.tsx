@@ -20,9 +20,12 @@ const SearchInput: React.FC<SearchInputProps> = ({ search, setSearch, handleSear
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="건물 이름이나 주소로 검색"
-        className="flex-grow mr-2 p-2 border rounded-md"
+        className="search-input"
       />
-      <button type="submit" className="border p-1 text-[13px] rounded-md">
+      <button
+        type="submit"
+        className="border-2 p-2 text-[13px] rounded-md hover:text-white hover:bg-[#003365] hover:border-[#003365] hover:shadow-md"
+      >
         검색
       </button>
     </form>

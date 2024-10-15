@@ -125,8 +125,8 @@ export default function KaKaoMap({ initialSearch = "" }: KakaoMapProps) {
       />
 
       {/* 지도영역 */}
-      <div className="w-11/12 overflow-hidden relative">
-        <Map center={mapCenter} className="container h-screen" level={12}>
+      <div className="w-10/12 overflow-hidden relative">
+        <Map center={mapCenter} className="container h-screen" level={13}>
           <MarkerClusterer averageCenter={true} minLevel={10}>
             {Object.entries(groupedData).map(([key, articles]) => {
               const [lat, lng] = key.split(",").map(Number);

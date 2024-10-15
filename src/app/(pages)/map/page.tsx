@@ -10,7 +10,6 @@ function MapPage() {
 
   return (
     <div>
-      <h1>카카오 지도 보여주기</h1>
       <KaKaoMap initialSearch={initialSearch} />
     </div>
   );

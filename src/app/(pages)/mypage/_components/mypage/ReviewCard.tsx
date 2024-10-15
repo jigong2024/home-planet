@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Review } from "@/app/types/mypageTypes/Review";
 
@@ -132,13 +131,6 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete, onEdit }) => 
     //   </div>
     // </li>
   );
-=======
-import React from "react";
-
-//  개별 리뷰를 카드 형식으로 표시하는 컴포넌트
-const ReviewCard = () => {
-  return <div>ReviewCard</div>;
->>>>>>> dev
 };
 
 export default ReviewCard;

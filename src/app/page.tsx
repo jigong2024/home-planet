@@ -1,11 +1,11 @@
-import Input from "./_components/input";
+import Input from "./_components/Input";
+import MainDisplay from "./_components/MainDisplay";
 
 export default function Home() {
   return (
-    <div>
-      {/* 지민님 작업 */}
+    <div className="container mx-auto p-4">
       <Input />
-      {/* 세희님 작업 */}
+      <MainDisplay />
     </div>
   );
 }

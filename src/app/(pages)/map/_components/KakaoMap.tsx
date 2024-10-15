@@ -53,7 +53,13 @@ export default function KaKaoMap({ initialSearch = "" }: KakaoMapProps) {
   // 검색 로직
   const handleSearch = useCallback(
     (searchTerm: string) => {
-      const searchLower = searchTerm.toLowerCase().replace(/\s+/g, "");
+      const trimmedSearchTerm = searchTerm.trim();
+      if (trimmedSearchTerm === "") {
+        alert("검색어를 입력해주세요.");
+        return;
+      }
+
+      const searchLower = trimmedSearchTerm.toLowerCase().replace(/\s+/g, "");
 
       const searched = articles.filter(
         (article) =>

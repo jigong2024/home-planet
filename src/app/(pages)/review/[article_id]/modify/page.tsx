@@ -5,7 +5,6 @@ import browserClient from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Article } from "@/app/types/reviewTypes/Article";
-import ModifyDropdown from "../../_components/ModifyDropdown";
 import ModifyMap from "../../_components/ModifyMap";
 import { Props } from "../page";
 
@@ -33,20 +32,15 @@ const ModifyReview = ({ params }: Props) => {
   const [previewUrls, setPreviewUrls] = useState("");
   const [addressInfo, setAddressInfo] = useState<AddressInfo>();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const houseTypeData = {
-    title: [houseType],
-    data: ["매매", "전세", "월세"]
-  };
-  const buildingTypeData = {
-    title: [buildingType],
-    data: ["아파트", "원룸", "투룸", "쓰리룸", "주택", "빌라", "오피스텔"]
-  };
+  const houseTypeData = ["매매", "전세", "월세"];
+  const buildingTypeData = ["아파트", "원룸", "투룸", "쓰리룸", "주택", "빌라", "오피스텔"];
   const router = useRouter();
 
-  // 거주 유형, 건물 유형 값 가져오기
-  const getHouseType = (type: string) => {
-    if (houseTypeData.data.includes(type)) setHouseType(type);
-    if (buildingTypeData.data.includes(type)) setBuildingType(type);
+  // 거주/건물 유형 선택
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const type = e.target.value;
+    if (houseTypeData.includes(type)) setHouseType(type);
+    if (buildingTypeData.includes(type)) setBuildingType(type);
   };
 
   // 주소 정보 가져오기
@@ -108,7 +102,17 @@ const ModifyReview = ({ params }: Props) => {
   // 리뷰 수정
   const updateReview = async () => {
     if (!address) return;
-    const answer = await browserClient
+    if (!addressInfo) return alert("주소를 입력해주세요!");
+    if (!houseType) return alert("거주 유형을 선택해주세요!");
+    if (!houseYear) return alert("거주 년도를 입력해주세요!");
+    if (!buildingType) return alert("건물 유형을 선택해주세요!");
+    if (!houseFloor) return alert("거주 층을 입력해주세요!");
+    if (!housePrice) return alert("계약 금액을 입력해주세요!");
+    if (!imgUrl) return alert("사진을 등록해주세요!");
+    if (!scoreOutside || !scoreInside || !scoreInside || !scoreCrime) return alert("4가지 항목을 전부 평가해주세요!");
+    if (!good) return alert("장점을 작성해주세요!");
+    if (!bad) return alert("단점을 작성해주세요!");
+    await browserClient
       .from("articles")
       .update({
         house_name: address.road_address.building_name,
@@ -129,7 +133,6 @@ const ModifyReview = ({ params }: Props) => {
         lng: address.x
       })
       .eq("article_id", params.article_id);
-    console.log(answer);
     alert("수정이 완료되었습니다!");
 
     // 리뷰 수정 후 상세페이지로 이동
@@ -150,8 +153,23 @@ const ModifyReview = ({ params }: Props) => {
         <ModifyMap getAddressData={getAddressData} addressInfo={addressInfo!} />
         <div className="grid grid-cols-2 gap-2 justify-items-center">
           <div>
-            <p className="review-label">거주 유형</p>
-            <ModifyDropdown props={houseTypeData} getHouseType={getHouseType} />
+            <div className="flex flex-col">
+              <label htmlFor="house-type" className="review-label">
+                거주 유형
+              </label>
+              <select onChange={handleSelect} id="house-type" defaultValue="" className="text-input">
+                <option value="" disabled>
+                  {houseType}
+                </option>
+                {houseTypeData.map((type, idx) => {
+                  return (
+                    <option key={idx} value={type}>
+                      {type}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
             <p className="review-label">거주 년도</p>
             <input
               className="text-input"
@@ -160,8 +178,23 @@ const ModifyReview = ({ params }: Props) => {
               onChange={(e) => setHouseYear(e.target.value)}
               placeholder="거주 년도를 입력해주세요."
             />
-            <p className="review-label">건물 유형</p>
-            <ModifyDropdown props={buildingTypeData} getHouseType={getHouseType} />
+            <div className="flex flex-col">
+              <label htmlFor="house-type" className="review-label">
+                건물 유형
+              </label>
+              <select onChange={handleSelect} id="house-type" defaultValue="" className="text-input">
+                <option value="" disabled>
+                  {buildingType}
+                </option>
+                {buildingTypeData.map((type, idx) => {
+                  return (
+                    <option key={idx} value={type}>
+                      {type}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
             <p className="review-label">거주 층</p>
             <input
               className="text-input"

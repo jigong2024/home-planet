@@ -40,7 +40,6 @@ const ModifyMap = ({
       if (stat === kakao.maps.services.Status.OK) {
         const newSearch = res[0];
         setState({ center: { lat: +newSearch.y, lng: +newSearch.x } });
-        console.log(newSearch);
         getAddressData(newSearch);
       }
     });

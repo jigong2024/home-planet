@@ -8,4 +8,6 @@ export interface Review {
   score_traffic: number;
   score_crime: number;
   address: string;
+  created_at: string; // 리뷰 작성 날짜
+  rating: number; // 리뷰 별점
 }

@@ -7,7 +7,11 @@ import SidePanel from "./SidePanel";
 import { fetchArticles } from "./supabase";
 import SideBar from "./SideBar";
 
-export default function KaKaoMap() {
+type KakaoMapProps = {
+  initialSearch: string;
+};
+
+export default function KaKaoMap({ initialSearch = "" }: KakaoMapProps) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticles, setselectedArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
@@ -16,37 +20,52 @@ export default function KaKaoMap() {
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState<"all" | "selected">("all");
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
 
   // 처음 로드 시 Supabase에서 articles 가져오기
   useEffect(() => {
-    async function loadArticles() {
+    async function loadArticlesAndSearch() {
       setIsLoading(true);
       const fetchedArticles = await fetchArticles();
 
       setArticles(fetchedArticles);
       setselectedArticles(fetchedArticles);
-      setFilteredArticles(fetchedArticles);
+
+      if (initialSearch) {
+        // 초기 검색 수행
+        const searchLower = initialSearch.toLowerCase().replace(/\s+/g, "");
+        const searched = fetchedArticles.filter(
+          (article) =>
+            article.address.toLowerCase().replace(/\s+/g, "").includes(searchLower) ||
+            article.house_name?.toLowerCase().replace(/\s+/g, "").includes(searchLower)
+        );
+        setFilteredArticles(searched);
+      } else {
+        setFilteredArticles(fetchedArticles);
+      }
 
       setIsLoading(false);
     }
 
-    loadArticles();
-  }, []);
+    loadArticlesAndSearch();
+  }, [initialSearch]);
 
   // 검색 로직
-  const handleSearch = useCallback(() => {
-    const searchLower = search.toLowerCase().replace(/\s+/g, "");
+  const handleSearch = useCallback(
+    (searchTerm: string) => {
+      const searchLower = searchTerm.toLowerCase().replace(/\s+/g, "");
 
-    const searched = articles.filter(
-      (article) =>
-        article.address.toLowerCase().replace(/\s+/g, "").includes(searchLower) ||
-        article.house_name?.toLowerCase().replace(/\s+/g, "").includes(searchLower)
-    );
+      const searched = articles.filter(
+        (article) =>
+          article.address.toLowerCase().replace(/\s+/g, "").includes(searchLower) ||
+          article.house_name?.toLowerCase().replace(/\s+/g, "").includes(searchLower)
+      );
 
-    setFilteredArticles(searched);
-    setViewMode("all");
-  }, [search, articles]);
+      setFilteredArticles(searched);
+      setViewMode("all");
+    },
+    [articles]
+  );
 
   // 같은 위치의 후기들을 그룹화
   const groupedData: GroupedData = useMemo(() => {

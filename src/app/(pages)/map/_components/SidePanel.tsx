@@ -9,7 +9,7 @@ type SidePanelProps = {
   onClose: () => void;
   onViewAllClick: () => void;
   viewMode: string;
-  handleSearch: () => void;
+  handleSearch: (searchTerm: string) => void;
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -75,7 +75,7 @@ const SidePanel = ({
             </div>
           ))
         ) : (
-          <p>원하는 정보를 검색해 주세요...</p>
+          <p>찾으시는 정보가 없습니다...</p>
         )}
       </div>
     </div>

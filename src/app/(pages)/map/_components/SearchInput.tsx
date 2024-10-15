@@ -2,7 +2,7 @@
 
 type SearchInputProps = {
   search: string;
-  handleSearch: () => void;
+  handleSearch: (searchTerm: string) => void;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -11,7 +11,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ search, setSearch, handleSear
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handleSearch();
+        handleSearch(search);
       }}
       className="flex justify-between items-baseline mb-4"
     >

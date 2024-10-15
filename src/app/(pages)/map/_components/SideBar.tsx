@@ -2,8 +2,8 @@
 
 type SideBarProps = {
   articles: Article[];
-  setFilteredArticles: Dispatch<SetStateAction<Article[]>>;
-  setIsSidePanelOpen: Dispatch<SetStateAction<boolean>>;
+  setFilteredArticles: React.Dispatch<React.SetStateAction<Article[]>>;
+  setIsSidePanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isSidePanelOpen: boolean;
 };
 

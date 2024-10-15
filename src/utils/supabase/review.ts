@@ -4,6 +4,18 @@ import { Review } from "@/app/types/mypageTypes/Review";
 
 const supabase = createClient();
 
+export const getAllReviews = async (): Promise<Review[]> => {
+  // 모든 리뷰 데이터를 가져오기
+  const { data, error } = await supabase.from("articles").select("*"); // reviews 테이블에서 모든 데이터 가져오기
+
+  if (error) {
+    console.error("Error fetching all reviews:", error);
+    return [];
+  }
+
+  return data as Review[];
+};
+
 export const getUserReviews = async (userId: string): Promise<Review[]> => {
   // articles 테이블에서 writer가 userId인 후기 데이터를 가져오기
   const { data, error } = await supabase.from("articles").select("*").eq("writer", userId); // writer 필드가 userId와 일치하는 데이터만 가져옴

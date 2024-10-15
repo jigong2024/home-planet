@@ -3,38 +3,33 @@
 import { useEffect, useState } from "react";
 import ReviewCard from "../(pages)/mypage/_components/mypage/ReviewCard";
 import { Review } from "@/app/types/mypageTypes/Review";
-import { getUserReviews } from "@/utils/supabase/review";
-import browserClient from "@/utils/supabase/client";
+import { getAllReviews } from "@/utils/supabase/review";
 
-const ReviewsDisplay = () => {
+interface ReviewsDisplayProps {
+  sortOrder: "latest" | "highest"; // 정렬 상태를 prop으로 받음
+}
+
+const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ sortOrder }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"latest" | "highest">("latest");
-
-  useEffect(() => {
-    const fetchUserId = async () => {
-      const {
-        data: { user }
-      } = await browserClient.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-      }
-    };
-    fetchUserId();
-  }, []);
 
   useEffect(() => {
     const fetchReviews = async () => {
-      if (userId) {
-        setLoading(true);
-        const fetchedReviews = await getUserReviews(userId);
-        setReviews(fetchedReviews);
-        setLoading(false);
-      }
+      setLoading(true);
+      const fetchedReviews = await getAllReviews(); // 모든 리뷰 가져오기
+      setReviews(fetchedReviews);
+      setLoading(false);
     };
     fetchReviews();
-  }, [userId]);
+  }, []);
+
+  // 평점 평균 점수 계산 함수
+  const scoreAverage = (review: Review) => {
+    const scores = [review.score_outside, review.score_inside, review.score_traffic, review.score_crime];
+    const totalScore = scores.reduce((sum, score) => sum + score, 0);
+    const averageScore = totalScore / scores.length / 2; // 5점 만점으로 변환
+    return averageScore;
+  };
 
   // 리뷰 정렬 함수
   const sortedReviews = () => {
@@ -42,16 +37,16 @@ const ReviewsDisplay = () => {
       if (sortOrder === "latest") {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime(); // 최신순
       } else {
-        return b.rating - a.rating; // 별점 높은순
+        return scoreAverage(b) - scoreAverage(a); // 별점 높은순
       }
     });
   };
 
   const displayedReviews = sortedReviews(); // 정렬된 리뷰를 변수에 저장
 
-//   if (loading) {
-//     return <p>리뷰를 불러오는 중...</p>;
-//   }
+  if (loading) {
+    return <p>리뷰를 불러오는 중...</p>;
+  }
 
   const handleDelete = (articleId: number) => {
     // 리뷰 삭제 로직 구현
@@ -68,27 +63,15 @@ const ReviewsDisplay = () => {
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">리뷰 목록</h1>
-      <div className="flex mb-4">
-        <button
-          className={`mr-2 p-2 ${sortOrder === "latest" ? "bg-blue-500 text-white" : "bg-gray-300"}`}
-          onClick={() => setSortOrder("latest")}
-        >
-          최신순
-        </button>
-        <button
-          className={`p-2 ${sortOrder === "highest" ? "bg-blue-500 text-white" : "bg-gray-300"}`}
-          onClick={() => setSortOrder("highest")}
-        >
-          별점 높은순
-        </button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {displayedReviews.length > 0 ? (
+          displayedReviews.map((review) => (
+            <ReviewCard key={review.article_id} review={review} onDelete={handleDelete} onEdit={handleEdit} />
+          ))
+        ) : (
+          <p>작성한 후기가 없습니다.</p>
+        )}
       </div>
-      {displayedReviews.length > 0 ? (
-        displayedReviews.map((review) => (
-          <ReviewCard key={review.article_id} review={review} onDelete={handleDelete} onEdit={handleEdit} />
-        ))
-      ) : (
-        <p>작성한 후기가 없습니다.</p>
-      )}
     </div>
   );
 };

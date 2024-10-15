@@ -2288,6 +2288,7 @@ react-kakao-maps-sdk@^1.1.27:
     "@babel/runtime" "^7.22.15"
     kakao.maps.d.ts "^0.1.39"
 
+<<<<<<< HEAD
 react-router-dom@^6.27.0:
   version "6.27.0"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.27.0.tgz#8d7972a425fd75f91c1e1ff67e47240c5752dc3f"
@@ -2303,6 +2304,8 @@ react-router@6.27.0:
   dependencies:
     "@remix-run/router" "1.20.0"
 
+=======
+>>>>>>> dev
 react@^18:
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"

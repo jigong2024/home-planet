@@ -12,6 +12,10 @@ const MyPage = () => {
           <li>
             <Link href="/mypage/wishlist">관심 리스트</Link>
           </li>
+<<<<<<< HEAD
+=======
+          {/* 다른 링크들 */}
+>>>>>>> dev
         </ul>
       </nav>
     </div>

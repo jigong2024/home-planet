@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { updateSession } from "./utils/supabase/middleware";
+import { createClient } from "./utils/supabase/server";
 
 export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get("sb-zpoqlmaetyjwslleswlh-auth-token");
+  await updateSession(request);
+  const serverClient = createClient();
+  const {
+    data: { user }
+  } = await serverClient.auth.getUser();
 
-  const isLogin = !!accessToken;
+  const isLogin = !!user;
 
   if (!isLogin && (request.nextUrl.pathname.startsWith("/mypage") || request.nextUrl.pathname.startsWith("/review"))) {
     return NextResponse.redirect(new URL("/login", request.url));

@@ -43,4 +43,11 @@ body {
   .bad-label {
     @apply bg-[#FFA500] px-8 py-2 rounded-lg font-bold text-white;
   }
+  .sideManu-button {
+    @apply flex flex-col justify-center items-center gap-1 border-2 m-2 rounded-md p-1 hover:border-[#003365] hover:text-[#003365] hover:shadow-md;
+  }
+
+  .search-input {
+    @apply flex-grow mr-4 p-2 border-2 rounded-md focus:outline-none focus:border-[#003365] transition-colors duration-200;
+  }
 }

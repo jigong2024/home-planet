@@ -59,31 +59,33 @@ const DetailPage = ({ params }: Props) => {
         <p className="text-s my-6 text-gray-400">총 평점 ★ {scoreAverage()}</p>
         <p className="font-bold my-6">{`거주 유형: ${review.house_type} / 거주 년도: ${review.house_year} / 건물 유형: ${review.building_type} / 거주 층: ${review.house_floor}`}</p>
       </header>
-      <Image src={review.img_url} alt="img_url" width={300} height={100} className="mb-10" />
-      <main className="grid grid-cols-2 justify-items-center">
-        <div>
-          <label className="good-label">장점</label>
-          <p>{review.good}</p>
-          <label className="bad-label">단점</label>
-          <p>{review.bad}</p>
+      <main className="grid grid-cols-2 justify-items-center mt-[60px] mb-[45px] h-[445px]">
+        <div className="flex flex-col items-start w-[718px] pl-[120px]">
+          <p className="good-label w-[165px] h-[55px] my-5 text-2xl leading-[40px]">장점</p>
+          <p className="font-medium text-start text-2xl w-[450px] h-[100px]">{review.good}</p>
+          <p className="bad-label w-[165px] h-[55px] mt-8 mb-5 text-2xl leading-[40px]">단점</p>
+          <p className="font-medium text-start text-2xl w-[450px] h-[100px]">{review.bad}</p>
         </div>
         <section>
-          <p>만족도를 평가해주세요. (최대 10점)</p>
+          <Image src={review.img_url} alt="img_url" width={400} height={100} className="mb-10" />
+          <p className="review-label text-center mb-4">
+            만족도 평가 <span className="text-[#666666]">(최대 10점)</span>
+          </p>
           <div className="grid grid-cols-2">
-            <div>
-              <label>집 외부</label>
+            <div className="detail-score bg-[#F1F1F1]">
+              <p className="score-label">집 외부</p>
               {review.score_outside}
             </div>
-            <div>
-              <label>교통</label>
+            <div className="detail-score bg-[#E2E1E1]">
+              <p className="score-label">교통</p>
               {review.score_traffic}
             </div>
-            <div>
-              <label>집 내부</label>
+            <div className="detail-score bg-[#F4F4F4]">
+              <p className="score-label">집 내부</p>
               {review.score_inside}
             </div>
-            <div>
-              <label>치안</label>
+            <div className="detail-score bg-[#F9F9F9]">
+              <p className="score-label">치안</p>
               {review.score_crime}
             </div>
           </div>
@@ -92,15 +94,15 @@ const DetailPage = ({ params }: Props) => {
       {uid && uid === review.writer ? (
         <div>
           <Link href={`/review/${params.article_id}/modify`}>
-            <button className="border p-2 px-8 mt-8 bg-[#aeaeae] text-white rounded-full">수정</button>
+            <button className="modify-btn">수정</button>
           </Link>
-          <button className="border p-2 px-8 mt-8 bg-[#ff8f8f] text-white rounded-full" onClick={deleteReview}>
+          <button className="modify-btn bg-[#696969] hover:bg-[#aeaeae]" onClick={deleteReview}>
             삭제
           </button>
         </div>
       ) : null}
       <Link href="/">
-        <button className="border p-2 px-14 my-8 bg-[#003366] text-white rounded-full">홈으로</button>
+        <button className="review-confirm-btn">홈으로</button>
       </Link>
     </div>
   );

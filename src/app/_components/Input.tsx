@@ -16,6 +16,8 @@ export default function Input() {
       return;
     }
 
+    const noGapSearch = trimmedSearch.toLowerCase().replace(/\s+/g, "");
+
     router.push(`/map?search=${encodeURIComponent(noGapSearch)}`);
   };
 

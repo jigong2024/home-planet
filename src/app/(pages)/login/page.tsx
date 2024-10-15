@@ -40,15 +40,16 @@ const Loginpage = () => {
   };
 
   return (
-    <>
-      <form onSubmit={handleAddInfo}>
+    <main className="mt-20 mb-20">
+      <form onSubmit={handleAddInfo}
+      className="flex flex-col gap-4">
         <input
           type="email"
           onChange={(event) => {
             handleChangeInput(event, "email");
           }}
           placeholder="Email"
-          className="text-black"
+          className="text-black w-[450px] h-[30px] mx-auto"
         />
         <input
           type="password"
@@ -56,15 +57,15 @@ const Loginpage = () => {
             handleChangeInput(event, "password");
           }}
           placeholder="Password"
-          className="text-black"
+          className="text-black w-[450px] h-[30px] mx-auto"
         />
-        <button>로그인</button>
+        <button className="text-black w-[450px] h-[30px] mx-auto">로그인</button>
       </form>
-      <span>
+      <span className="flex gap-2 justify-center">
         <p>계정이 없으신가요?</p>
-        <Link href={"/signup"}>회원가입</Link>
+        <Link href={"/signup"} className="font-bold">회원가입</Link>
       </span>
-    </>
+    </main>
   );
 };
 

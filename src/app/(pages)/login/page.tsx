@@ -1,6 +1,7 @@
 "use client";
 
 import browserClient from "@/utils/supabase/client";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -40,31 +41,41 @@ const Loginpage = () => {
   };
 
   return (
-    <main className="mt-20 mb-20">
-      <form onSubmit={handleAddInfo}
-      className="flex flex-col gap-4">
-        <input
-          type="email"
-          onChange={(event) => {
-            handleChangeInput(event, "email");
-          }}
-          placeholder="Email"
-          className="text-black w-[450px] h-[30px] mx-auto"
+    <main className="mt-20 mb-20 flex flex-col justify-center items-center h-[75vh]">
+      <div>
+        <Image
+          src="/images/house-planet-logo.png"
+          alt="집플래닛 로고"
+          width={70}
+          height={70}
+          className="mx-auto mb-5"
         />
-        <input
-          type="password"
-          onChange={(event) => {
-            handleChangeInput(event, "password");
-          }}
-          placeholder="Password"
-          className="text-black w-[450px] h-[30px] mx-auto"
-        />
-        <button className="text-black w-[450px] h-[30px] mx-auto">로그인</button>
-      </form>
-      <span className="flex gap-2 justify-center">
-        <p>계정이 없으신가요?</p>
-        <Link href={"/signup"} className="font-bold">회원가입</Link>
-      </span>
+        <form onSubmit={handleAddInfo} className="flex flex-col gap-8">
+          <input
+            type="email"
+            onChange={(event) => {
+              handleChangeInput(event, "email");
+            }}
+            placeholder="Email"
+            className="text-black w-[450px] h-[50px] mx-auto border border-[#A1A1AA] rounded-full pl-5"
+          />
+          <input
+            type="password"
+            onChange={(event) => {
+              handleChangeInput(event, "password");
+            }}
+            placeholder="Password"
+            className="text-black w-[450px] h-[50px] mx-auto border border-[#A1A1AA] rounded-full pl-5"
+          />
+          <button className="text-white bg-[#FFA500] w-[450px] h-[50px] mx-auto rounded-full">로그인</button>
+        </form>
+        <span className="flex gap-2 justify-center mt-8">
+          <p>계정이 없으신가요?</p>
+          <Link href={"/signup"} className="font-bold">
+            회원가입
+          </Link>
+        </span>
+      </div>
     </main>
   );
 };

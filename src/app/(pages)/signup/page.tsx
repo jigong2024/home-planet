@@ -1,6 +1,7 @@
 "use client";
 
 import browserClient from "@/utils/supabase/client";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -56,31 +57,42 @@ const SignUppage = () => {
   };
 
   return (
-    <>
-      <form onSubmit={handleAddInfo}>
-        <input
-          type="email"
-          onChange={(event) => {
-            handleChangeInput(event, "email");
-          }}
-          placeholder="Email"
-          className="text-black"
+    <main className="mt-20 mb-20 flex flex-col justify-center items-center h-[75vh]">
+      <div>
+        <Image
+          src="/images/house-planet-logo.png"
+          alt="집플래닛 로고"
+          width={70}
+          height={70}
+          className="mx-auto mb-5"
         />
-        <input
-          type="password"
-          onChange={(event) => {
-            handleChangeInput(event, "password");
-          }}
-          placeholder="Password"
-          className="text-black"
-        />
-        <button>회원가입</button>
-      </form>
-      <span>
-        <p>이미 계정이 있으신가요?</p>
-        <Link href={"/login"}>로그인</Link>
-      </span>
-    </>
+        <form onSubmit={handleAddInfo} className="flex flex-col gap-8">
+          <input
+            type="email"
+            onChange={(event) => {
+              handleChangeInput(event, "email");
+            }}
+            placeholder="Email"
+            className="text-black w-[450px] h-[50px] mx-auto border border-[#A1A1AA] rounded-full pl-5"
+          />
+          <input
+            type="password"
+            onChange={(event) => {
+              handleChangeInput(event, "password");
+            }}
+            placeholder="Password"
+            className="text-black w-[450px] h-[50px] mx-auto border border-[#A1A1AA] rounded-full pl-5"
+          />
+          <button className="text-white bg-[#FFA500] w-[450px] h-[50px] mx-auto rounded-full">회원가입</button>
+        </form>
+        <span className="flex gap-2 justify-center mt-8">
+          <p>이미 계정이 있으신가요?</p>
+          <Link href={"/login"} className="font-bold">
+            로그인
+          </Link>
+        </span>
+      </div>
+    </main>
   );
 };
 

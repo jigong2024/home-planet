@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import browserClient from "@/utils/supabase/client";
 
 const useUserId = () => {
-    const [userId, setUserId] = useState<string>("c1b966c4-0733-49be-9864-8092d2ab19f3");
-//   const [userId, setUserId] = useState<string | null>(null);
+    // const [userId, setUserId] = useState<string>("c1b966c4-0733-49be-9864-8092d2ab19f3");
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserId = async () => {

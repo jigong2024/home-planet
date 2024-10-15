@@ -27,19 +27,19 @@ export default function Header() {
               <Image src="/images/house-planet-logo.png" alt="집플래닛 로고" width={70} height={70} />
             </Link>
           </h1>
-          <ul className="flex space-x-6">
+          <ul className="flex w-[1000px] justify-between space-x-6">
             <li>
-              <Link href="/map" className="text-black transition-colors duration-300">
+              <Link href="/map" className="text-xl text-black transition-colors duration-300">
                 지도
               </Link>
             </li>
             <li>
-              <Link href="/mypage" className="text-black transition-colors duration-300">
+              <Link href="/mypage" className="text-xl text-black transition-colors duration-300">
                 마이페이지
               </Link>
             </li>
             <li>
-              <button onClick={handleLogout} className="text-black transition-colors duration-300">
+              <button onClick={handleLogout} className="text-xl text-black transition-colors duration-300">
                 로그아웃
               </button>
             </li>
@@ -56,19 +56,19 @@ export default function Header() {
               <Image src="/images/house-planet-logo.png" alt="집플래닛 로고" width={70} height={70} />
             </Link>
           </h1>
-          <ul className="flex space-x-6">
+          <ul className="flex w-[1000px] justify-between space-x-6">
             <li>
-              <Link href="/map" className="text-black transition-colors duration-300">
+              <Link href="/map" className="text-xl text-black transition-colors duration-300">
                 지도
               </Link>
             </li>
             <li>
-              <Link href="/login" className="text-black transition-colors duration-300">
+              <Link href="/login" className="text-xl text-black transition-colors duration-300">
                 로그인
               </Link>
             </li>
             <li>
-              <Link href="/signup" className="text-black transition-colors duration-300">
+              <Link href="/signup" className="text-xl text-black transition-colors duration-300">
                 회원가입
               </Link>
             </li>

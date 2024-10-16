@@ -34,8 +34,11 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete, showActions }
 
   // 리뷰 삭제 기능
   const handleDelete = async (article_id: number) => {
-    await deleteUserReview(article_id);
-    onDelete(article_id);
+    const confirm = window.confirm("리뷰를 삭제하시겠습니까?");
+    if (confirm) {
+      await deleteUserReview(article_id);
+      onDelete(article_id);
+    }
   };
 
   // 리뷰 상세 페이지로 이동 기능

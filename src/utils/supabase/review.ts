@@ -30,14 +30,11 @@ export const getUserReviews = async (userId: string): Promise<Review[]> => {
 
 // 리뷰 삭제 함수
 export const deleteUserReview = async (article_id: number) => {
-  const confirm = window.confirm("리뷰를 삭제하시겠습니까?");
-  if (confirm) {
-    try {
-      await browserClient.from("articles").delete().eq("article_id", article_id);
-      alert("삭제되었습니다!");
-    } catch (error) {
-      console.log("delete error", error);
-    }
+  try {
+    await browserClient.from("articles").delete().eq("article_id", article_id);
+    alert("삭제되었습니다!");
+  } catch (error) {
+    console.log("delete error", error);
   }
 };
 

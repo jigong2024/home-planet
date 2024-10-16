@@ -67,7 +67,7 @@ const Loginpage = () => {
             placeholder="Password"
             className="text-black w-[450px] h-[50px] mx-auto border border-[#A1A1AA] rounded-full pl-5"
           />
-          <button className="text-white bg-[#FFA500] w-[450px] h-[50px] mx-auto rounded-full">로그인</button>
+          <button className="text-white bg-[#FFA500] w-[450px] h-[50px] mx-auto rounded-full hover:bg-[#967228]">로그인</button>
         </form>
         <span className="flex gap-2 justify-center mt-8">
           <p>계정이 없으신가요?</p>

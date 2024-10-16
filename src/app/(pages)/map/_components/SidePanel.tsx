@@ -87,17 +87,17 @@ const SidePanel = ({
               {/* Divider line */}
               <div className="border-b border mb-3 w-full"></div>
 
-              <div className="flex gap-5">
+              <div className="flex gap-5 justify-stretch">
                 <div className="w-1/2">
                   <span className="p-1 px-3 rounded-md bg-[#3fcc71] text-white text-[11px]">장점</span>
-                  <p className="py-2 text-[11px] line-clamp-4 overflow-hidden">{article.good}</p>
+                  <p className="mt-[10px] text-[11px] line-clamp-2">{article.good}</p>
                 </div>
 
                 <div className="border-r"></div>
 
                 <div className="w-1/2">
                   <span className="p-1 px-3 rounded-md bg-[#f7a501] text-white text-[11px]">단점</span>
-                  <p className="py-2 text-[11px] line-clamp-4 overflow-hidden">{article.bad}</p>
+                  <p className="mt-[10px] text-[11px] line-clamp-2">{article.bad}</p>
                 </div>
               </div>
             </div>

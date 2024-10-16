@@ -38,10 +38,10 @@ body {
     text-wrap: balance;
   }
   .good-label {
-    @apply bg-[#2ECC71] px-8 py-2 rounded-lg font-bold text-white;
+    @apply bg-[#2ECC71] px-3 py-1 rounded-lg font-bold text-white text-sm;
   }
   .bad-label {
-    @apply bg-[#FFA500] px-8 py-2 rounded-lg font-bold text-white;
+    @apply bg-[#FFA500] px-3 py-1 rounded-lg font-bold text-white text-sm;
   }
 
   .sideManu-button {

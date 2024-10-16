@@ -1,20 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Review } from "@/app/types/mypageTypes/Review";
+import { useRouter } from "next/navigation";
+import { deleteUserReview } from "@/utils/supabase/review";
 
 interface ReviewCardProps {
   review: Review; // 개별 리뷰 객체
   onDelete: (articleId: number) => void; // 삭제 함수
-  onEdit: (articleId: number, updatedReview: Partial<Review>) => void; // 수정 함수
+  showActions?: boolean; // 수정/삭제 버튼 표시 여부
 }
 
 // ReviewCard 컴포넌트: 개별 리뷰 정보를 표시
-const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete, onEdit }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [updatedReview, setUpdatedReview] = useState<{ good: string; bad: string }>({
-    good: review.good,
-    bad: review.bad
-  });
+const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete, showActions }) => {
+  const router = useRouter();
 
   // 평점 평균 점수 계산 함수
   const scoreAverage = (review: Review) => {
@@ -31,105 +29,51 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete, onEdit }) => 
 
   // 리뷰 수정 기능
   const handleEdit = () => {
-    onEdit(review.article_id, updatedReview);
-    setIsEditing(false);
+    router.push(`/review/${review.article_id}/modify`); // 수정 페이지로 이동
+  };
+
+  // 리뷰 삭제 기능
+  const handleDelete = async (article_id: number) => {
+    await deleteUserReview(article_id);
+    onDelete(article_id);
   };
 
   return (
     <li className="p-4 border rounded-lg shadow flex flex-col">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center">
         {review.house_name ? (
-          <h2 className="text-lg font-semibold">{review.house_name}</h2>
+          <h2 className="text-lg font-semibold mr-2">{review.house_name}</h2>
         ) : (
-          <h2 className="text-lg font-semibold">{review.address || "주소 정보 없음"}</h2>
+          <h2 className="text-lg font-semibold mr-2">{review.address || "주소 정보 없음"}</h2>
         )}
-        <div className="flex items-center">
-          <span className="text-xl font-bold">⭐️{scoreAverage(review)}</span>
-          <button onClick={() => setIsEditing(true)} className="ml-2 text-blue-600">
-            수정
-          </button>
-          <button onClick={() => onDelete(review.article_id)} className="ml-2 text-red-600">
-            삭제
-          </button>
+        <span className="text-lg mr-2">⭐️{scoreAverage(review)}</span>
+
+        {/* showActions가 true일 때만 수정/삭제 버튼 렌더링 */}
+        {showActions && (
+          <div className="flex items-center ml-auto">
+            <button onClick={handleEdit} className="ml-2 text-blue-600">
+              수정
+            </button>
+            <button onClick={() => handleDelete(review.article_id)} className="ml-2 text-red-600">
+              삭제
+            </button>
+          </div>
+        )}
+      </div>
+
+      <hr className="my-2 border-gray-300" />
+      <div className="flex">
+        <div className="w-1/2 p-1">
+          <span className="good-label">장점</span>
+          <p className="text-gray-700 mt-1 ">{review.good}</p>
+        </div>
+        <div className="border-l border-gray-300 mx-2"></div>
+        <div className="w-1/2 p-1">
+          <span className="bad-label">단점</span>
+          <p className="text-gray-700 mt-1">{review.bad}</p>
         </div>
       </div>
-      <hr className="my-2 border-gray-300" />
-      {isEditing ? (
-        <div className="flex">
-          <div className="w-1/2 p-2">
-            <span className="good-label">장점</span>
-            <input
-              type="text"
-              value={updatedReview.good}
-              onChange={(e) => setUpdatedReview({ ...updatedReview, good: e.target.value })}
-              className="border rounded p-1 w-full mt-1" // 스타일 추가
-            />
-          </div>
-          <div className="border-l border-gray-300 mx-4"></div> {/* 장점과 단점 사이의 경계 */}
-          <div className="w-1/2 p-2">
-            <span className="bad-label">단점</span>
-            <input
-              type="text"
-              value={updatedReview.bad}
-              onChange={(e) => setUpdatedReview({ ...updatedReview, bad: e.target.value })}
-              className="border rounded p-1 w-full mt-1" // 스타일 추가
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="flex">
-          <div className="w-1/2 p-2">
-            <span className="good-label">장점</span>
-            <p className="text-gray-700 mt-2">{review.good}</p> {/* 여백 추가 */}
-          </div>
-          <div className="border-l border-gray-300 mx-4"></div> {/* 장점과 단점 사이의 경계 */}
-          <div className="w-1/2 p-2">
-            <span className="bad-label">단점</span>
-            <p className="text-gray-700 mt-2">{review.bad}</p> {/* 여백 추가 */}
-          </div>
-        </div>
-      )}
-      {isEditing && (
-        <div className="flex justify-end mt-2">
-          <button onClick={handleEdit} className="bg-blue-500 text-white rounded px-2 py-1">
-            수정 완료
-          </button>
-          <button onClick={() => setIsEditing(false)} className="bg-gray-300 text-black rounded px-2 py-1 ml-2">
-            취소
-          </button>
-        </div>
-      )}
     </li>
-    // <li className="p-4 border rounded-lg shadow flex flex-col">
-    //   <div className="flex justify-between items-center">
-    //     {review.house_name ? (
-    //       <h2 className="text-lg font-semibold">{review.house_name}</h2>
-    //     ) : (
-    //       <h2 className="text-lg font-semibold">{review.address || "주소 정보 없음"}</h2>
-    //     )}
-    //     <div className="flex items-center">
-    //       <span className="text-xl font-bold">⭐️{averageScore.toFixed(2)}</span>
-    //       <button onClick={() => setIsEditing(true)} className="ml-2 text-blue-600">
-    //         수정
-    //       </button>
-    //       <button onClick={() => onDelete(review.article_id)} className="ml-2 text-red-600">
-    //         삭제
-    //       </button>
-    //     </div>
-    //   </div>
-    //   <hr className="my-2 border-gray-300" />
-    //   <div className="flex">
-    //     <div className="w-1/2 p-2">
-    //       <span className="good-label">장점</span>
-    //       <p className="text-gray-700 mt-2">{review.good}</p> {/* 여백 추가 */}
-    //     </div>
-    //     <div className="border-l border-gray-300 mx-4"></div> {/* 장점과 단점 사이의 경계 */}
-    //     <div className="w-1/2 p-2">
-    //       <span className="bad-label">단점</span>
-    //       <p className="text-gray-700 mt-2">{review.bad}</p> {/* 여백 추가 */}
-    //     </div>
-    //   </div>
-    // </li>
   );
 };
 

@@ -1,5 +1,5 @@
 // utils/supabase/reviews.ts
-import { createClient } from "./client";
+import browserClient, { createClient } from "./client";
 import { Review } from "@/app/types/mypageTypes/Review";
 
 const supabase = createClient();
@@ -29,15 +29,15 @@ export const getUserReviews = async (userId: string): Promise<Review[]> => {
 };
 
 // 리뷰 삭제 함수
-export const deleteUserReview = async (articleId: number) => {
-  const { error } = await supabase
-    .from("reviews") // "reviews"는 Supabase에서 리뷰를 저장하는 테이블의 이름입니다.
-    .delete()
-    .eq("article_id", articleId); // article_id가 일치하는 리뷰를 삭제
-
-  if (error) {
-    console.error("리뷰 삭제 실패:", error);
-    throw error; // 오류 발생 시 예외를 던집니다.
+export const deleteUserReview = async (article_id: number) => {
+  const confirm = window.confirm("리뷰를 삭제하시겠습니까?");
+  if (confirm) {
+    try {
+      await browserClient.from("articles").delete().eq("article_id", article_id);
+      alert("삭제되었습니다!");
+    } catch (error) {
+      console.log("delete error", error);
+    }
   }
 };
 
@@ -46,7 +46,7 @@ export const updateUserReview = async (article_id: number, updatedReview: Partia
   console.log("업데이트 요청:", article_id, updatedReview);
 
   const { error } = await supabase
-    .from("reviews") // "reviews"는 Supabase에서 리뷰를 저장하는 테이블의 이름입니다.
+    .from("articles")
     .update(updatedReview) // 업데이트할 내용을 전달
     .eq("article_id", article_id); // article_id가 일치하는 리뷰를 업데이트
 

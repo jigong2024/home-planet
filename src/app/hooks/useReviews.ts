@@ -25,7 +25,7 @@ const useReviews = (userId: string | null) => {
     await deleteUserReview(articleId); // 리뷰 삭제
     setReviews(reviews.filter((review) => review.article_id !== articleId)); // 상태 업데이트
   };
-
+  
   // 수정 함수
   const handleEdit = async (articleId: number, updatedReview: Partial<Review>) => {
     // Partial<Review>로 변경

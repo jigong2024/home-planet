@@ -13,8 +13,8 @@
     --foreground: #171717;
   }
 }
-<<<<<<< HEAD html,
-=======>>>>>>>dev body {
+html,
+body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -45,9 +45,12 @@
   }
 
   .sideManu-button {
-    @apply flex flex-col justify-center items-center gap-1 border-2 m-2 rounded-md p-1 hover:border-[#003365] hover:text-[#003365] hover:shadow-md;
+    @apply flex flex-col justify-center items-center text-[12px] gap-1 border-2 m-2 rounded-md p-1 hover:border-[#003365] hover:text-[#003365] hover:shadow-md;
   }
   .search-input {
     @apply flex-grow mr-4 p-2 border-2 rounded-full focus:outline-none focus:border-[#003365] transition-colors duration-200;
+  }
+  .maxWidthFull {
+    max-width: 100% !important;
   }
 }

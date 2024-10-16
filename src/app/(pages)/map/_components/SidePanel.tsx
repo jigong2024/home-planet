@@ -42,7 +42,7 @@ const SidePanel = ({
   };
 
   return (
-    <div className="absolute left-8 top-0 h-full w-1/3 bg-white shadow-lg p-4 overflow-y-auto z-10">
+    <div className="absolute left-[10px] top-0 h-full w-1/3 bg-white shadow-lg p-4 overflow-y-auto z-10">
       <div className="flex justify-between items-center mx-1 my-3">
         <h2 className="text-[25px] font-bold text-[#003365]">등록된 후기 리스트</h2>
 

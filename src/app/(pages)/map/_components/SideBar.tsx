@@ -38,7 +38,7 @@ const SideBar = ({ articles, setFilteredArticles, setIsSidePanelOpen, isSidePane
   };
 
   return (
-    <div className="flex flex-col gap-3 w-2/12 border">
+    <div className="flex flex-col gap-3 w-[80px] border">
       {/* 토글버튼 */}
       <button onClick={toggleSidePanel} className="sideManu-button">
         검색

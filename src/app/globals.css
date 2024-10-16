@@ -9,19 +9,96 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
   }
 }
-
+html,
 body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+@layer components {
+  .text-input {
+    @apply bg-[#EFEFEF] text-start rounded-full px-10 h-9 w-80 focus:outline-none;
+  }
+  .review-label {
+    @apply mt-4 text-start font-bold;
+  }
+  .score-input {
+    @apply w-[185px] h-20 text-center font-bold text-3xl leading-[25px];
+  }
+  .detail-score {
+    @apply w-[200px] h-20 text-center font-bold text-3xl leading-[25px];
+  }
+  .score-number {
+    @apply w-[185px] h-6 text-center focus:outline-none;
+  }
+  .comment-input {
+    @apply bg-[#EFEFEF] w-[370px] h-20 px-6 focus:outline-none;
+  }
+  .map-confirm-btn {
+    @apply px-4 ml-2 my-8 bg-[#9d9d9d] hover:bg-[#585858] text-white rounded-full h-9 font-semibold;
+  }
+  .review-confirm-btn {
+    @apply p-2 w-[200px] my-10 bg-[#012346] font-bold text-white rounded-full hover:bg-[#25486b];
+  }
+  .modify-btn {
+    @apply p-2 m-1 px-8 mt-10 bg-[#aeaeae] font-bold text-white rounded-full hover:bg-[#696969];
+  }
+  .score-label {
+    @apply ml-2 mt-2 left-4 text-start font-normal text-base;
+  }
+  .select-arrow {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #efefef url("/images/select-arrow.png") no-repeat center right 10px;
+    background-size: 20px;
+    select-arrow::-ms-expand {
+      display: none;
+    }
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .good-label {
+    @apply bg-[#2ECC71] px-3 py-1 rounded-lg  text-white text-[11px];
+  }
+  .bad-label {
+    @apply bg-[#FFA500] px-3 py-1 rounded-lg text-white  text-[11px];
+  }
+
+  .sideManu-button {
+    @apply flex flex-col justify-center items-center text-[12px] gap-1 border-2 m-2 rounded-md p-1 hover:border-[#003365] hover:text-[#003365] hover:shadow-md;
+  }
+  .search-input {
+    @apply flex-grow mr-4 p-2 border-2 rounded-full focus:outline-none focus:border-[#003365] transition-colors duration-200;
+  }
+  .maxWidthFull {
+    max-width: 100% !important;
   }
 }

@@ -22,6 +22,7 @@ const DetailPage = ({ params }: Props) => {
     getReview();
   }, []);
 
+  // 리뷰 가져오기
   const getReview = async () => {
     const res = await browserClient.from("articles").select("*").eq("article_id", `${params.article_id}`);
     if (res.error !== null) {
@@ -31,6 +32,7 @@ const DetailPage = ({ params }: Props) => {
     setReview(findData);
   };
 
+  // 리뷰 삭제
   const deleteReview = async () => {
     const confirm = window.confirm("리뷰를 삭제하시겠습니까?");
     if (confirm) {
@@ -46,6 +48,7 @@ const DetailPage = ({ params }: Props) => {
 
   if (!review) return;
 
+  // 만족도 평가 평균
   const scoreAverage = () => {
     const score = [review.score_outside, review.score_inside, review.score_traffic, review.score_crime];
     const sum = score.reduce((a, b) => a + b, 0);
@@ -69,7 +72,7 @@ const DetailPage = ({ params }: Props) => {
         <section>
           <Image src={review.img_url} alt="img_url" width={400} height={100} className="mb-10" />
           <p className="review-label text-center mb-4">
-            만족도 평가 <span className="text-[#666666]">(최대 10점)</span>
+            만족도 평가 <span className="text-[#666666]">(각 최대 10점)</span>
           </p>
           <div className="grid grid-cols-2">
             <div className="detail-score bg-[#F1F1F1]">
@@ -101,9 +104,19 @@ const DetailPage = ({ params }: Props) => {
           </button>
         </div>
       ) : null}
-      <Link href="/">
-        <button className="review-confirm-btn">홈으로</button>
-      </Link>
+      <div>
+        <button
+          onClick={() => {
+            router.back();
+          }}
+          className="mr-2 border border-solid border-[#25486b] bg-white text-[#25486b] p-2 w-[200px] my-10 font-bold rounded-full"
+        >
+          뒤로가기
+        </button>
+        <Link href="/">
+          <button className="review-confirm-btn">홈으로</button>
+        </Link>
+      </div>
     </div>
   );
 };

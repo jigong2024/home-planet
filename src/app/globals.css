@@ -13,6 +13,7 @@
     --foreground: #171717;
   }
 }
+html,
 body {
   margin: 0;
   padding: 0;
@@ -53,6 +54,16 @@ body {
   }
   .score-label {
     @apply ml-2 mt-2 left-4 text-start font-normal text-base;
+  }
+  .select-arrow {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #efefef url("/images/select-arrow.png") no-repeat center right 10px;
+    background-size: 20px;
+    select-arrow::-ms-expand {
+      display: none;
+    }
   }
 }
 

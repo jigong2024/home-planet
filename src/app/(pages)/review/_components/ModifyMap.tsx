@@ -41,6 +41,9 @@ const ModifyMap = ({
         const newSearch = res[0];
         setState({ center: { lat: +newSearch.y, lng: +newSearch.x } });
         getAddressData(newSearch);
+      } else {
+        alert("유효한 주소 정보가 아닙니다. 다시 확인해주세요!");
+        setSearchAddress("");
       }
     });
   };

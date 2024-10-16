@@ -41,7 +41,7 @@ const Loginpage = () => {
   };
 
   return (
-    <main className="mt-20 mb-20 flex flex-col justify-center items-center h-[calc(100%-165px)]">
+    <main className="flex flex-col justify-center items-center h-[calc(100%-170px)]">
       <div>
         <Image
           src="/images/house-planet-logo.png"

@@ -51,7 +51,7 @@ const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ sortOrder }) => {
 
   const handleDelete = (articleId: number) => {
     // 리뷰 삭제 로직 구현
-    // console.log(`Delete review with id: ${articleId}`);
+    console.log(`Delete review with id: ${articleId}`);
     // 삭제 후 리뷰 목록을 다시 불러오도록 할 수 있습니다.
   };
 

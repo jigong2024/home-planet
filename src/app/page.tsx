@@ -1,5 +1,4 @@
 import Banner from "./_components/Banner";
-import Input from "./_components/Input";
 import MainDisplay from "./_components/MainDisplay";
 
 export default function Home() {

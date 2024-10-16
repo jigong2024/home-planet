@@ -128,7 +128,7 @@ export default function KaKaoMap({ initialSearch = "" }: KakaoMapProps) {
       <div className="w-[calc(100%-80px)] overflow-hidden relative">
         <Map
           center={mapCenter}
-          className="container h-full maxWidthFull
+          className="container min-h-[calc(100vh-170px)] maxWidthFull
         "
           level={13}
         >

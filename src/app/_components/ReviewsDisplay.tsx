@@ -13,6 +13,7 @@ const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ sortOrder }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // 리뷰 가져오기
   useEffect(() => {
     const fetchReviews = async () => {
       setLoading(true);
@@ -50,14 +51,8 @@ const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ sortOrder }) => {
 
   const handleDelete = (articleId: number) => {
     // 리뷰 삭제 로직 구현
-    console.log(`Delete review with id: ${articleId}`);
+    // console.log(`Delete review with id: ${articleId}`);
     // 삭제 후 리뷰 목록을 다시 불러오도록 할 수 있습니다.
-  };
-
-  const handleEdit = (articleId: number, updatedReview: Partial<Review>) => {
-    // 리뷰 수정 로직 구현
-    console.log(`Edit review with id: ${articleId}`, updatedReview);
-    // 여기서 실제 업데이트 로직을 구현할 수 있습니다.
   };
 
   return (
@@ -66,7 +61,7 @@ const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ sortOrder }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {displayedReviews.length > 0 ? (
           displayedReviews.map((review) => (
-            <ReviewCard key={review.article_id} review={review} onDelete={handleDelete} onEdit={handleEdit} />
+            <ReviewCard key={review.article_id} review={review} showActions={false} onDelete={handleDelete} />
           ))
         ) : (
           <p>작성한 후기가 없습니다.</p>

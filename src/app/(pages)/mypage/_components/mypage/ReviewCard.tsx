@@ -38,42 +38,61 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review, onDelete, showActions }
     onDelete(article_id);
   };
 
+  // 리뷰 상세 페이지로 이동 기능
+  const handleCardClick = () => {
+    router.push(`/review/${review.article_id}`); // 상세 페이지로 이동
+  };
+
   return (
-    <li className="p-4 border rounded-lg shadow flex flex-col">
-      <div className="flex items-center">
-        {review.house_name ? (
-          <h2 className="text-lg font-semibold mr-2">{review.house_name}</h2>
-        ) : (
-          <h2 className="text-lg font-semibold mr-2">{review.address || "주소 정보 없음"}</h2>
-        )}
-        <span className="text-lg mr-2">⭐️{scoreAverage(review)}</span>
+    <div onClick={handleCardClick} className="cursor-pointer">
+      <li className="p-4 border rounded-lg shadow flex flex-col hover:shadow-lg transition-shadow duration-200">
+        <div className="flex items-center">
+          {review.house_name ? (
+            <h2 className="text-lg font-semibold mr-2">{review.house_name}</h2>
+          ) : (
+            <h2 className="text-lg font-semibold mr-2">{review.address || "주소 정보 없음"}</h2>
+          )}
+          <span className="text-lg mr-2">⭐️{scoreAverage(review)}</span>
 
-        {/* showActions가 true일 때만 수정/삭제 버튼 렌더링 */}
-        {showActions && (
-          <div className="flex items-center ml-auto">
-            <button onClick={handleEdit} className="ml-2 text-blue-600">
-              수정
-            </button>
-            <button onClick={() => handleDelete(review.article_id)} className="ml-2 text-red-600">
-              삭제
-            </button>
+          {/* showActions가 true일 때만 수정/삭제 버튼 렌더링 */}
+          {showActions && (
+            <div className="flex items-center ml-auto">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit();
+                }}
+                className="ml-2 text-blue-600"
+              >
+                수정
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(review.article_id);
+                }}
+                className="ml-2 text-red-600"
+              >
+                삭제
+              </button>
+            </div>
+          )}
+        </div>
+
+        <hr className="my-2 border-gray-300" />
+        <div className="flex">
+          <div className="w-1/2 p-1">
+            <span className="good-label">장점</span>
+            <p className="text-gray-700 mt-2 text-[11px] line-clamp-2">{review.good}</p>
           </div>
-        )}
-      </div>
-
-      <hr className="my-2 border-gray-300" />
-      <div className="flex">
-        <div className="w-1/2 p-1">
-          <span className="good-label">장점</span>
-          <p className="text-gray-700 mt-1 ">{review.good}</p>
+          <div className="border-l border-gray-300 mx-2"></div>
+          <div className="w-1/2 p-1">
+            <span className="bad-label">단점</span>
+            <p className="text-gray-700 mt-2 text-[11px] line-clamp-2">{review.bad}</p>
+          </div>
         </div>
-        <div className="border-l border-gray-300 mx-2"></div>
-        <div className="w-1/2 p-1">
-          <span className="bad-label">단점</span>
-          <p className="text-gray-700 mt-1">{review.bad}</p>
-        </div>
-      </div>
-    </li>
+      </li>
+    </div>
   );
 };
 

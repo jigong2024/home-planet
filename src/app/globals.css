@@ -86,10 +86,10 @@ img {
     text-wrap: balance;
   }
   .good-label {
-    @apply bg-[#2ECC71] px-3 py-1 rounded-lg font-bold text-white text-sm;
+    @apply bg-[#2ECC71] px-3 py-1 rounded-lg  text-white text-[11px];
   }
   .bad-label {
-    @apply bg-[#FFA500] px-3 py-1 rounded-lg font-bold text-white text-sm;
+    @apply bg-[#FFA500] px-3 py-1 rounded-lg text-white  text-[11px];
   }
 
   .sideManu-button {

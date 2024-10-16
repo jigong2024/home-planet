@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -23,7 +24,7 @@ export default function Input() {
 
   return (
     <div>
-      <form onSubmit={handleSearch}>
+      <form onSubmit={handleSearch} className="flex justify-center w-96 gap-4">
         <input
           type="text"
           value={search}
@@ -31,7 +32,14 @@ export default function Input() {
           placeholder="건물 이름이나 주소로 검색"
           className="search-input"
         />
-        <button type="submit">검색</button>
+        <button type="submit" className="w-10 bg-white rounded-full pl-1 border-2 hover:border-[#003365]">
+          <Image
+            src="https://img.icons8.com/material-outlined/24/search--v1.png"
+            alt="search--v1"
+            width="26"
+            height="26"
+          />
+        </button>
       </form>
     </div>
   );

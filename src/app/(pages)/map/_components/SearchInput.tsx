@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 type SearchInputProps = {
   search: string;
   handleSearch: (searchTerm: string) => void;
@@ -13,7 +15,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ search, setSearch, handleSear
         e.preventDefault();
         handleSearch(search);
       }}
-      className="flex justify-between items-baseline mb-4"
+      className="flex justify-between my-5"
     >
       <input
         type="text"
@@ -22,11 +24,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ search, setSearch, handleSear
         placeholder="건물 이름이나 주소로 검색"
         className="search-input"
       />
-      <button
-        type="submit"
-        className="border-2 p-2 text-[13px] rounded-md hover:text-white hover:bg-[#003365] hover:border-[#003365] hover:shadow-md"
-      >
-        검색
+
+      <button type="submit" className="w-10 bg-white rounded-full pl-1 border-2 hover:border-[#003365]">
+        <Image
+          src="https://img.icons8.com/material-outlined/24/search--v1.png"
+          alt="search--v1"
+          width="26"
+          height="26"
+        />
       </button>
     </form>
   );

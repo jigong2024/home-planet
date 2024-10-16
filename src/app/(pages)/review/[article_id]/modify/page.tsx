@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { Article } from "@/app/types/reviewTypes/Article";
 import ModifyMap from "../../_components/ModifyMap";
 import { Props } from "../page";
+import Image from "next/image";
 
 export type AddressInfo = {
   houseName: string;
@@ -230,12 +231,13 @@ const ModifyReview = ({ params }: Props) => {
           <div className="flex flex-col items-center">
             <p className="review-label text-center">사진 등록</p>
             <input onChange={handleImgChange} type="file" ref={fileInputRef} hidden />
-            <img
-              src={previewUrls}
-              alt="homeImg"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-[370px] h-auto"
-            />
+            {previewUrls ? (
+              <div className="relative w-full py-[30%]" onClick={() => fileInputRef.current?.click()}>
+                <Image src={previewUrls} alt="homeImg" layout="fill" className="object-cover" />
+              </div>
+            ) : (
+              <div>로딩중...</div>
+            )}
             <p className="review-label text-center">
               만족도를 평가해주세요 <span className="text-[#666666]">(각 최대 10점)</span>
             </p>

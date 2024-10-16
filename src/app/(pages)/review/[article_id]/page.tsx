@@ -64,13 +64,19 @@ const DetailPage = ({ params }: Props) => {
       </header>
       <main className="grid grid-cols-2 justify-items-center mt-[60px] mb-[45px] h-[445px]">
         <div className="flex flex-col items-start w-[718px] pl-[120px]">
-          <p className="good-label w-[165px] h-[55px] my-5 text-2xl leading-[40px]">장점</p>
-          <p className="font-medium text-start text-2xl w-[450px] h-[100px]">{review.good}</p>
-          <p className="bad-label w-[165px] h-[55px] mt-8 mb-5 text-2xl leading-[40px]">단점</p>
-          <p className="font-medium text-start text-2xl w-[450px] h-[100px]">{review.bad}</p>
+          <p className="bg-[#2ECC71] text-white font-bold rounded-lg w-[165px] h-[55px] my-5 text-2xl flex items-center justify-center">
+            장점
+          </p>
+          <p className="font-medium text-start text-[14px] w-[500px] h-[100px] overflow-y-auto">{review.good}</p>
+          <p className="mt-10 bg-[#FFA500] text-white font-bold rounded-lg w-[165px] h-[55px] my-5 text-2xl flex items-center justify-center">
+            단점
+          </p>
+          <p className="font-medium text-start text-[14px] w-[500px] h-[100px] overflow-y-auto">{review.bad}</p>
         </div>
         <section>
-          <Image src={review.img_url} alt="img_url" width={400} height={100} className="mb-10" />
+          <div className="relative w-full py-[30%] mb-10">
+            <Image src={review.img_url} alt="img_url" layout="fill" className="object-cover" />
+          </div>
           <p className="review-label text-center mb-4">
             만족도 평가 <span className="text-[#666666]">(각 최대 10점)</span>
           </p>

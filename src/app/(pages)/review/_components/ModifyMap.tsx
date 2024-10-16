@@ -41,6 +41,9 @@ const ModifyMap = ({
         const newSearch = res[0];
         setState({ center: { lat: +newSearch.y, lng: +newSearch.x } });
         getAddressData(newSearch);
+      } else {
+        alert("유효한 주소 정보가 아닙니다. 다시 확인해주세요!");
+        setSearchAddress("");
       }
     });
   };
@@ -58,10 +61,10 @@ const ModifyMap = ({
         type="text"
         value={searchAddress}
         onChange={handleInputChange}
-        className="border text-center bg-[#E2E1E1] rounded-md"
+        className="text-input"
         placeholder={`${addressInfo.address}`}
       />
-      <button onClick={getCoords} className="border px-2 ml-1 my-4 bg-[#9d9d9d] rounded-md text-white font-semibold">
+      <button onClick={getCoords} className="map-confirm-btn">
         확인
       </button>
     </>

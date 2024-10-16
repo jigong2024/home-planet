@@ -13,7 +13,6 @@
     --foreground: #171717;
   }
 }
-
 html,
 body {
   margin: 0;
@@ -41,10 +40,44 @@ img {
 
 @layer components {
   .text-input {
-    @apply border bg-[#E2E1E1] text-center rounded-lg px-14;
+    @apply bg-[#EFEFEF] text-start rounded-full px-10 h-9 w-80 focus:outline-none;
   }
   .review-label {
     @apply mt-4 text-start font-bold;
+  }
+  .score-input {
+    @apply w-[185px] h-20 text-center font-bold text-3xl leading-[25px];
+  }
+  .detail-score {
+    @apply w-[200px] h-20 text-center font-bold text-3xl leading-[25px];
+  }
+  .score-number {
+    @apply w-[185px] h-6 text-center focus:outline-none;
+  }
+  .comment-input {
+    @apply bg-[#EFEFEF] w-[370px] h-20 px-6 focus:outline-none;
+  }
+  .map-confirm-btn {
+    @apply px-4 ml-2 my-8 bg-[#9d9d9d] hover:bg-[#585858] text-white rounded-full h-9 font-semibold;
+  }
+  .review-confirm-btn {
+    @apply p-2 w-[200px] my-10 bg-[#012346] font-bold text-white rounded-full hover:bg-[#25486b];
+  }
+  .modify-btn {
+    @apply p-2 m-1 px-8 mt-10 bg-[#aeaeae] font-bold text-white rounded-full hover:bg-[#696969];
+  }
+  .score-label {
+    @apply ml-2 mt-2 left-4 text-start font-normal text-base;
+  }
+  .select-arrow {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #efefef url("/images/select-arrow.png") no-repeat center right 10px;
+    background-size: 20px;
+    select-arrow::-ms-expand {
+      display: none;
+    }
   }
 }
 

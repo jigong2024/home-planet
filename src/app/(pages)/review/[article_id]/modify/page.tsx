@@ -101,7 +101,7 @@ const ModifyReview = ({ params }: Props) => {
 
   // 리뷰 수정
   const updateReview = async () => {
-    if (!address) return;
+    // if (!address) return alert("주소를 입력해주세요!");
     if (!addressInfo) return alert("주소를 입력해주세요!");
     if (!houseType) return alert("거주 유형을 선택해주세요!");
     if (!houseYear) return alert("거주 년도를 입력해주세요!");
@@ -112,31 +112,36 @@ const ModifyReview = ({ params }: Props) => {
     if (!scoreOutside || !scoreInside || !scoreInside || !scoreCrime) return alert("4가지 항목을 전부 평가해주세요!");
     if (!good) return alert("장점을 작성해주세요!");
     if (!bad) return alert("단점을 작성해주세요!");
-    await browserClient
-      .from("articles")
-      .update({
-        house_name: address.road_address.building_name,
-        house_type: houseType,
-        house_year: houseYear,
-        house_price: housePrice,
-        building_type: buildingType,
-        house_floor: houseFloor,
-        score_outside: scoreOutside,
-        score_inside: scoreInside,
-        score_traffic: scoreTraffic,
-        score_crime: scoreCrime,
-        good,
-        bad,
-        img_url: imgUrl,
-        address: address.address_name,
-        lat: address.y,
-        lng: address.x
-      })
-      .eq("article_id", params.article_id);
-    alert("수정이 완료되었습니다!");
+    try {
+      await browserClient
+        .from("articles")
+        .update({
+          house_name: address?.road_address ? address.road_address.building_name : address?.address_name,
+          house_type: houseType,
+          house_year: houseYear,
+          house_price: housePrice,
+          building_type: buildingType,
+          house_floor: houseFloor,
+          score_outside: scoreOutside,
+          score_inside: scoreInside,
+          score_traffic: scoreTraffic,
+          score_crime: scoreCrime,
+          good,
+          bad,
+          img_url: imgUrl,
+          address: address?.address_name,
+          lat: address?.y,
+          lng: address?.x
+        })
+        .eq("article_id", params.article_id);
+    } catch (error) {
+      console.error("upload error", error);
+    } finally {
+      alert("수정이 완료되었습니다!");
 
-    // 리뷰 수정 후 상세페이지로 이동
-    router.push(`/review/${params.article_id}`);
+      // 리뷰 수정 후 상세페이지로 이동
+      router.push(`/review/${params.article_id}`);
+    }
   };
 
   if (!houseType && !buildingType) return;
@@ -157,7 +162,12 @@ const ModifyReview = ({ params }: Props) => {
               <label htmlFor="house-type" className="review-label">
                 거주 유형
               </label>
-              <select onChange={handleSelect} id="house-type" defaultValue="" className="text-input">
+              <select
+                onChange={handleSelect}
+                id="house-type"
+                defaultValue=""
+                className="text-input select-arrow text-[#585858]"
+              >
                 <option value="" disabled>
                   {houseType}
                 </option>
@@ -182,7 +192,12 @@ const ModifyReview = ({ params }: Props) => {
               <label htmlFor="house-type" className="review-label">
                 건물 유형
               </label>
-              <select onChange={handleSelect} id="house-type" defaultValue="" className="text-input">
+              <select
+                onChange={handleSelect}
+                id="house-type"
+                defaultValue=""
+                className="text-input select-arrow text-[#585858]"
+              >
                 <option value="" disabled>
                   {buildingType}
                 </option>
@@ -212,53 +227,69 @@ const ModifyReview = ({ params }: Props) => {
               placeholder="계약 금액을 입력해주세요."
             />
           </div>
-          <div>
-            <p>사진 등록</p>
+          <div className="flex flex-col items-center">
+            <p className="review-label text-center">사진 등록</p>
             <input onChange={handleImgChange} type="file" ref={fileInputRef} hidden />
             <img
               src={previewUrls}
               alt="homeImg"
               onClick={() => fileInputRef.current?.click()}
-              className="w-60 h-auto"
+              className="w-[370px] h-auto"
             />
-            <p>만족도를 평가해주세요 (최대 10점)</p>
-            <div className="grid grid-cols-2 justify-items-center">
-              <input
-                className="border w-24"
-                placeholder="집 외부"
-                type="text"
-                value={scoreOutside}
-                onChange={(e) => setScoreOutside(e.target.value)}
-              />
-              <input
-                className="border w-24"
-                placeholder="집 내부"
-                type="text"
-                value={scoreInside}
-                onChange={(e) => setScoreInside(e.target.value)}
-              />
-              <input
-                className="border w-24"
-                placeholder="교통"
-                type="text"
-                value={scoreTraffic}
-                onChange={(e) => setScoreTraffic(e.target.value)}
-              />
-              <input
-                className="border w-24"
-                placeholder="치안"
-                type="text"
-                value={scoreCrime}
-                onChange={(e) => setScoreCrime(e.target.value)}
-              />
+            <p className="review-label text-center">
+              만족도를 평가해주세요 <span className="text-[#666666]">(각 최대 10점)</span>
+            </p>
+            <div className="grid grid-cols-2 gap-y-3.5">
+              <div className="score-input bg-[#F1F1F1]">
+                <p className="score-label">집 외부</p>
+                <input
+                  className="score-number bg-[#F1F1F1]"
+                  type="text"
+                  value={scoreOutside}
+                  onChange={(e) => setScoreOutside(e.target.value)}
+                />
+              </div>
+              <div className="score-input bg-[#E2E1E1]">
+                <p className="score-label">집 내부</p>
+                <input
+                  className="score-number bg-[#E2E1E1]"
+                  type="text"
+                  value={scoreInside}
+                  onChange={(e) => setScoreInside(e.target.value)}
+                />
+              </div>
+              <div className="score-input bg-[#F4F4F4]">
+                <p className="score-label">교통</p>
+                <input
+                  className="score-number bg-[#F4F4F4]"
+                  type="text"
+                  value={scoreTraffic}
+                  onChange={(e) => setScoreTraffic(e.target.value)}
+                />
+              </div>
+              <div className="score-input bg-[#F9F9F9]">
+                <p className="score-label">치안</p>
+                <input
+                  className="score-number bg-[#F9F9F9]"
+                  type="text"
+                  value={scoreCrime}
+                  onChange={(e) => setScoreCrime(e.target.value)}
+                />
+              </div>
             </div>
-            <p>장점</p>
-            <input className="border" type="text" value={good} onChange={(e) => setGood(e.target.value)} />
-            <p>단점</p>
-            <input className="border" type="text" value={bad} onChange={(e) => setBad(e.target.value)} />
           </div>
         </div>
-        <button className="border p-2 px-14 my-8 bg-[#003366] text-white rounded-full" onClick={updateReview}>
+        <div className="grid grid-cols-2">
+          <div className="flex flex-col items-center">
+            <p className="good-label w-[100px] mt-7 mb-3">장점</p>
+            <textarea className="comment-input py-4" value={good} onChange={(e) => setGood(e.target.value)} />
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="bad-label w-[100px] mt-7 mb-3">단점</p>
+            <textarea className="comment-input py-4" value={bad} onChange={(e) => setBad(e.target.value)} />
+          </div>
+        </div>
+        <button className="review-confirm-btn" onClick={updateReview}>
           수정
         </button>
       </main>

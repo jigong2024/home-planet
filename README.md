@@ -163,3 +163,73 @@ home-planet/
   > 새로운 후기 생성 및 수정, 이미지 핸들링
 
 ## 이슈 🔥
+### <메인 페이지와 지도 페이지의 검색 기능 통합> (팀원 최지민)<br>
+문제: 메인페이지에서 검색 후 자동으로 지도페이지로 이동할 때, 검색 결과가 유지되지 않았습니다.<br>
+원인: 지도랑 메인에서 서로 다른 Input 컴포넌트를 사용중이기 때문에 로직이 달라서 발생하는 문제인 것 같습니다.<br>
+해결방법: URL 파라미터를 활용해 검색 상태를 공유했습니다. router.push() 사용해서 지도페이지로 전달했습니다.
+```
+router.push(`/map?search=${encodeURIComponent(search)}`);
+```
+지도페이지에서는 URL 파라미터를 읽어와 KakaoMap 컴포넌트에 프롭스로 전달했습니다.
+```
+import { useSearchParams } from 'next/navigation';
+import KaKaoMap from './KaKaoMap';
+
+export default function MapPage() {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+
+  return <KaKaoMap initialSearch={initialSearch} />;
+}
+```
+KakaoMap 컴포넌트에서는 initialSearch 프롭스를 받아서 사용했습니다!<br>
+결과: 사용자는 메인페이지에서 검색을 하면 자동으로 지도페이지로 이동하며 검색결과가 즉시 표시됩니다. 따로 사용자가 지도를 들어가서 검색해도 검색 결과는 일치합니다.<br>
+
+### <Cannot read properties of undefined (reading 'Geocoder')> (팀원 설하영)<br>
+문제: kakao맵의 services 라이브러리 기능인 지오코더를 인식하지 못하였습니다.<br>
+원인: script를 동적으로 로드하게 되면 로드가 다 끝나기도 전에 kakao api를 불러오는 코드가 먼저 실행 될 수 있기 때문에 script의 src url 뒤에 추가해줬었던 autoload=false와 연관이 있었습니다.<br>
+해결방법: useEffect 안에서 불러오던 함수를 window.kakao.maps.load 콜백함수로 감싸주어 카카오 맵 SDK 가 로드가 다 되고난 후 실행되도록 처리하여 해결하였습니다.<br>
+```
+<Script src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.KAKAO_KEY}&autoload=false&libraries=services`}
+    strategy="beforeInteractive"
+/>
+
+useEffect(() => {
+  window.kakao.maps.load(() => {
+   const geocoder = new window.kakao.maps.services.Geocoder();
+  });
+ }, []);
+```
+### <middleware에서 로그인 상태를 확인하기 위해 작성한 코드들> (팀장 김진형)
+문제: middleware는 외부에서 zustand 상태에 접근하지 못하기 때문에 어떻게 로그인 상태를 접근할 수 있는지 많은 고민을 하였습니다.<br>
+해결방법1: auth로 로그인을 진행해서 성공하면 cookies에 sb-...-auth-token이 생성되는 것을 확인하고 이것이 존재하면 user가 로그인을 하였다고 판단하여 코드를 작성하였습니다.
+```
+export async function middleware(request: NextRequest) {
+  const accessToken = request.cookies.get("sb-zpoqlmaetyjwslleswlh-auth-token");
+  const isLogin = !!accessToken;
+  if (!isLogin && (request.nextUrl.pathname.startsWith("/mypage") || request.nextUrl.pathname.startsWith("/review"))) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  return NextResponse.next();
+}
+```
+해결방법1의 문제점: 배포를 진행하거나 다른 이유에서 auth의 middleware의 접근 주소가 변경되면 토큰 이름이 변경되어 middleware가 동작하지 않을 수 있다는 문제점이 존재하였습니다.<br>
+해결방법2: Supabase에 접근하여 user 정보를 가져오는 로직을 작성하는 방식으로 변경하여 작성하였습니다.
+```
+export async function middleware(request: NextRequest) {
+  await updateSession(request);
+  const serverClient = createClient();
+  const {
+    data: { user }
+  } = await serverClient.auth.getUser();
+
+  const isLogin = !!user;
+
+  if (!isLogin && (request.nextUrl.pathname.startsWith("/mypage") || request.nextUrl.pathname.startsWith("/review"))) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return NextResponse.next();
+}
+```
+개선사항 및 결과: updateSession(request)을 통해 supabase.auth 세션을 업데이트하고 getUser()를 통해서 user 정보를 가져왔습니다. 이를 통하여 만약 발생할 수 있는 auth의 middleware 접근 주소가 변경되어 토큰 이름이 변경 되더라도 auth에서 user 정보를 들고 올 수 있게 되었습니다.
